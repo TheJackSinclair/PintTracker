@@ -1,0 +1,30 @@
+image: node:latest
+
+stages:
+  - install 
+  - build
+  - dev
+
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+install:
+  stage: install
+  script:
+    - npm install
+    - ls node_modules/.bin
+
+build:
+  stage: build
+  script:
+    - npm run build
+dev:
+  stage: dev
+  script:
+    - npm run dev &  # Start the server in the background
+    - SERVER_PID=$!  # Save the PID of the server process
+    - sleep 10  # Wait for the server to start; adjust time as needed
+    - echo "Server running with PID $SERVER_PID"
+    - kill $SERVER_PID  # Kill the server process
