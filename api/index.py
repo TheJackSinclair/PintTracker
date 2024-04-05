@@ -7,13 +7,12 @@ from datetime import datetime
 
 app = Flask(__name__)
 
-@dataclass
 class Account:
-    def __init__(self, username, password, email, time_of_request):
+    def __init__(self, username, password, email, member_since):
         self.username = username
         self.password = password
         self.email = email
-        self.time_of_request = time_of_request
+        self.member_since = member_since
 
 
 @app.route("/api/account/create", methods=["POST"])
