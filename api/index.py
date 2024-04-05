@@ -22,8 +22,14 @@ def create_account():
     password = data["password"]
     email = data["email"]
     account = Account(username, password, email, datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
-    with open(os.path.join("api/accounts", f"{account.username}.json"), "w") as f:
+
+    directory = "api/accounts"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+    with open(os.path.join(directory, f"{account.username}.json"), "w") as f:
         json.dump(account.__dict__, f, indent=4)
+
     return "<p>Account created</p>"
 
 
