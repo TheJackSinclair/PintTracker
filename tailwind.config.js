@@ -11,7 +11,8 @@ module.exports = {
       'pt-yellow': '#FFD93D',
       'pt-orange': '#FF8400',
       'pt-brown': '#4F200D',
-      'pt-red': '#D23D1C'
+      'pt-red': '#D23D1C',
+      'pt-offwhite': '#FEFDFA'
     },
     extend: {
       backgroundImage: {
