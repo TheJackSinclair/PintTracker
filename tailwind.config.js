@@ -27,6 +27,9 @@ module.exports = {
         '6' : '6px'
       }
     },
+    dropShadow: {
+      'text': '0 1px 1.35px rgba(0,0,0,0.8)'
+    }
   },
   plugins: [],
 }
