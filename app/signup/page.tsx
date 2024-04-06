@@ -3,7 +3,7 @@ import {Panel} from "@/app/Components/Panel";
 export default function Home() {
   return (
     <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <Panel>
+        <Panel width={'small'}>
             <p className={'text-pt-brown text-4xl font-bold'}>Sign In</p>
             <div>
                 <input type="text" id="username"
