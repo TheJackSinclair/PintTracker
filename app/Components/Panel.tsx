@@ -11,7 +11,7 @@ const Panel = (props: PanelProps) => {
         large: 'lg:w-3/4',
     };
 
-    const panelClassName = `grid bg-pt-offwhite rounded-[50px] p-10 border-4 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]}`;
+    const panelClassName = `grid bg-pt-offwhite rounded-[30px] p-8 border-6 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]} shadow-3xl shadow-pt-yellow`;
 
     return (
             <div className={panelClassName}>
