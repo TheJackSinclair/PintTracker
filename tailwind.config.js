@@ -7,7 +7,7 @@ module.exports = {
   ],
   theme: {
     colors: {
-      'bg-beige': '#F6F1E9',
+      'pt-beige': '#F6F1E9',
       'pt-yellow': '#FFD93D',
       'pt-orange': '#FF8400',
       'pt-brown': '#4F200D',
