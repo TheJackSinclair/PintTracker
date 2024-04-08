@@ -2,6 +2,7 @@ from flask import Flask, request
 import json
 import os
 from datetime import datetime
+import beer_api
 
 app = Flask(__name__)
 
@@ -42,6 +43,10 @@ def create_account():
 
     return "<p>Account created</p>"
 
+@app.route("/api/beer/search/<query>")
+def search_beer(query):
+    results = beer_api.search_data(query)
+    return json.dumps({"search_results": results}, indent=4)
 
 @app.route("/api/python")
 def hello_world():
