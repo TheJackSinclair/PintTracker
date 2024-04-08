@@ -15,15 +15,29 @@ class Account:
         self.member_since = member_since
         self.added = []
         self.added_you = []
+        self.pint_history = {}
 
     def add_user(self, username):
-        #needs name verification (if user_exists)
+        # needs name verification (if user_exists)
 
         self.added.append(username)
-        #their user 'added_you' needs updated
+        # their user 'added_you' needs update
 
     def been_added(self, username):
         self.added_you.append(username)
+
+    def add_pint(self, pint):
+        # Use the pint's timestamp as the key
+        self.pint_history[pint.timestamp] = pint.__dict__
+
+
+class Pint:
+    def __init__(self, timestamp, name, full_name, abv, style):
+        self.timestamp = timestamp
+        self.name = name
+        self.full_name = full_name
+        self.abv = abv
+        self.style = style
 
 
 @app.route("/api/account/create", methods=["POST"])
@@ -43,10 +57,12 @@ def create_account():
 
     return "<p>Account created</p>"
 
+
 @app.route("/api/beer/search/<query>")
 def search_beer(query):
     results = beer_api.search_data(query)
     return json.dumps({"search_results": results}, indent=4)
+
 
 @app.route("/api/python")
 def hello_world():
