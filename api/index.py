@@ -3,6 +3,7 @@ import json
 import os
 from datetime import datetime
 import beer_api
+import accountFinder
 
 app = Flask(__name__)
 
@@ -47,6 +48,14 @@ def create_account():
     password = data["password"]
     email = data["email"]
     account = Account(username, password, email, datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+    added = []
+    added_you = []
+
+    def add_user(self, username):
+        if accountFinder.user_exists(username):
+            self.added.append(username)
+            friend = accountFinder.get_user(username)
+            friend.added_you.append(self.username)
 
     directory = "api/accounts"
     if not os.path.exists(directory):
