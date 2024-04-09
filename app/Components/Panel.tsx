@@ -2,6 +2,7 @@ interface PanelProps {
     children: React.ReactNode;
     width: 'small' | 'medium' | 'large'
     shadow: 'yellow' | 'orange'
+    centered?: boolean
 }
 
 const Panel = (props: PanelProps) => {
@@ -17,7 +18,7 @@ const Panel = (props: PanelProps) => {
         orange: 'shadow-pt-orange'
     }
 
-    const panelClassName = `grid bg-pt-offwhite rounded-[30px] p-8 border-6 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]} shadow-3xl ${shadowColour[props.shadow]}`;
+    const panelClassName = `grid ${props.centered ? 'm-auto' : ''} bg-pt-offwhite rounded-[30px] p-8 border-6 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]} shadow-3xl ${shadowColour[props.shadow]}`;
 
     return (
             <div className={panelClassName}>

@@ -56,13 +56,19 @@ export default function Carousel() {
         className="mySwiper"
       > 
         <SwiperSlide>
-            <AnalyticsCard content={favPints} title="Your favourite pints are:" analyticsType="list"/>
+            <AnalyticsCard>
+                d
+            </AnalyticsCard>
         </SwiperSlide>
         <SwiperSlide>
-            <AnalyticsCard content={favPints} title="Your favourite pints are:" analyticsType="list"/>
+            <AnalyticsCard>
+                d
+            </AnalyticsCard>
         </SwiperSlide>
         <SwiperSlide>
-            <AnalyticsCard content={favPints} title="Your favourite pints are:" analyticsType="list"/>
+            <AnalyticsCard>
+                d
+            </AnalyticsCard>
         </SwiperSlide>
       </Swiper>
     </>

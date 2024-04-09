@@ -28,26 +28,29 @@ export const options = {
       position: 'top' as const,
     },
     title: {
-      display: true,
-      text: 'Chart.js Line Chart',
+      display: false,
+      text: 'Your pint history',
     },
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+const labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday 🤙', 'Sunday'];
 
-export const data = {
-  labels,
-  datasets: [
-    {
-      label: 'Dataset 1',
-      data: labels.map(() => 4),
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-    },
-  ],
-};
+interface AnalyticsChartProps {
+    weeklyPintHistory: Object;
+}
 
-export function AnalyticsChart() {
+export function AnalyticsChart(props : AnalyticsChartProps) {
+    const data = {
+        labels,
+        datasets: [
+          {
+            label: 'Your pint history',
+            data: props.weeklyPintHistory,
+            borderColor: 'rgb(255, 99, 132)',
+            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+          },
+        ],
+      };
   return <Line options={options} data={data} />;
 }
