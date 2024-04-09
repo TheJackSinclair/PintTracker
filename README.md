@@ -13,3 +13,21 @@ On localhost, the rewrite will be made to the `127.0.0.1:5328` port, which is wh
 In production, the Flask server is hosted as [Python serverless functions](https://vercel.com/docs/concepts/functions/serverless-functions/runtimes/python) on Vercel.
 
 ## Pint Tracker Documentation
+
+We have 2 main directories:
+    
+/api: this contains all of our backend code
+    
+/app: this contains all of our frontend code
+
+To run the project you can do
+
+Backend:
+    
+    npm run flask-dev
+Frontend:
+
+    npm run next-dev
+Both:
+
+    npm run dev

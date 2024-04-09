@@ -7,11 +7,12 @@ module.exports = {
   ],
   theme: {
     colors: {
-      'bg-beige': '#F6F1E9',
+      'pt-beige': '#F6F1E9',
       'pt-yellow': '#FFD93D',
       'pt-orange': '#FF8400',
       'pt-brown': '#4F200D',
-      'pt-red': '#D23D1C'
+      'pt-red': '#D23D1C',
+      'pt-offwhite': '#FEFDFA'
     },
     extend: {
       backgroundImage: {
@@ -19,7 +20,16 @@ module.exports = {
         'gradient-conic':
           'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
       },
+      boxShadow: {
+        '3xl': '20px 20px 0px 0px',
+      },
+      borderWidth: {
+        '6' : '6px'
+      }
     },
+    dropShadow: {
+      'text': '0 1px 1.35px rgba(0,0,0,0.8)'
+    }
   },
   plugins: [],
 }
