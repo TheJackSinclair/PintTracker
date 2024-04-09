@@ -1,14 +1,16 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Carousel from '../Components/Carousel';
 import axios from 'axios';
 
-export default function Home() {
+export default function MyPints() {
   const [name, setName] = useState(null);
 
   // this is like onMounted() in vuejs
   useEffect(() => {
     fetchName();
+
   }, []);
 
   const fetchName = async () => {
@@ -18,17 +20,21 @@ export default function Home() {
     } catch (error) {
       console.error('Error fetching data:', error);
     }
+    
   };
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
+    <main className="min-h-screen p-10">
       {name ? (
-        <div className=" ">
-          <p>Here are your analytics, {name}</p>
+        <div className="my-5 flex flex-col">
+          <p className="text-pt-brown text-center text-6xl font-extrabold drop-shadow-2xl">Here's your analytics, {name}</p>
         </div>
       ) : (
         <p>Loading...</p>
       )}
+      
+      <Carousel/>
+      
     </main>
   );
 }

@@ -16,7 +16,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}><NavBar/>{children}</body>
+      <body className={inter.className}><NavBar/>
+      {children}
+      </body>
     </html>
   )
 }
