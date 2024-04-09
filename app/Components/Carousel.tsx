@@ -9,26 +9,34 @@ import 'swiper/css/pagination';
 
 // import required modules
 import { EffectCoverflow, Pagination } from 'swiper/modules';
+import { fetchUsername } from '../Common/UserCommon'
 import AnalyticsCard from './AnalyticsCard';
+import axios from 'axios';
 
 export default function Carousel() {
-    const [favPints, setFavePints] = useState({});
+    const [favPints, setFavPints] = useState({});
+    const [strongestPint, setStrongestPint] = useState(null);
+    const [numPintsDrank, setNumPintsDrank] = useState(null);
+    const [username, setUsername] = useState<string | null>(null);
 
     // this is like onMounted() in vuejs
     useEffect(() => {
-      fetchCardData();
-  
+        let usernameFromLocalStorage = fetchUsername();
+        // Update the state only if the name is not null
+        if (usernameFromLocalStorage !== null) {
+            setUsername(usernameFromLocalStorage);
+        }
+      fetchAnalytics();
     }, []);
-  
-    const fetchCardData = async () => {
-    //   try {
-    //     const response = await axios.get('/api/name');
-    //     setName(response.data);
-    //   } catch (error) {
-    //     console.error('Error fetching data:', error);
-    //   }
-      
+
+    const fetchAnalytics= async () => {
+        try {
+            const response = await axios.get('/api/analytics', {params: username});
+        } catch (error) {
+            console.error('Error fetching data:', error);
+        }
     };
+
   return (
     <>
       <Swiper
@@ -48,13 +56,13 @@ export default function Carousel() {
         className="mySwiper"
       > 
         <SwiperSlide>
-        <AnalyticsCard content="jjj" title="kkk"/>
+            <AnalyticsCard content={favPints} title="Your favourite pints are:" analyticsType="list"/>
         </SwiperSlide>
         <SwiperSlide>
-          <AnalyticsCard content="jjj" title="kkk"/>
+            <AnalyticsCard content={favPints} title="Your favourite pints are:" analyticsType="list"/>
         </SwiperSlide>
         <SwiperSlide>
-        <AnalyticsCard content="jjj" title="kkk"/>
+            <AnalyticsCard content={favPints} title="Your favourite pints are:" analyticsType="list"/>
         </SwiperSlide>
       </Swiper>
     </>
