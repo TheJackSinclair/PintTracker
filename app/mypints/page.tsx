@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Carousel from '../Components/Carousel';
+import { AnalyticsChart } from '../Components/AnalyticsChart';
 import { fetchUsername } from '../Common/UserCommon'
 import axios from 'axios';
 
@@ -27,8 +28,9 @@ export default function MyPints() {
         <p>Loading...</p>
       )}
       
-      <Carousel/>
+      {/* <Carousel /> */}
       
+      <AnalyticsChart />
     </main>
   );
 }
