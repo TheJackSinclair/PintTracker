@@ -4,6 +4,7 @@ import os
 from datetime import datetime
 import beer_api
 import accountFinder
+import toDict
 
 app = Flask(__name__)
 
@@ -19,13 +20,15 @@ class Account:
         self.pint_history = {}
 
     def add_user(self, username):
-        # needs name verification (if user_exists)
+        if accountFinder.user_exists(username):
+            self.added.append(username)
+            friend = accountFinder.get_user(username)
+            friend.added_you.append(self.username)
+            friend_path = accountFinder.get_path(username)
+            with open(friend_path, 'w') as file:
+                dict_entry = toDict.to_dict(friend)
+                json.dump(dict_entry, file, indent=4)
 
-        self.added.append(username)
-        # their user 'added_you' needs update
-
-    def been_added(self, username):
-        self.added_you.append(username)
 
     def add_pint(self, pint):
         # Use the pint's timestamp as the key
