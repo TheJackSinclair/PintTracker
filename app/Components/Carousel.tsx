@@ -1,22 +1,19 @@
+{/* Carousel component for a users statistics. Usage: <Carousel> wasup playa </Carousel> */}
+
 import React, { useRef, useState, useEffect } from 'react';
-// Import Swiper React components
 import { Swiper, SwiperSlide } from 'swiper/react';
 
-// Import Swiper styles
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
-
-// import required modules
 import { EffectCoverflow, Pagination } from 'swiper/modules';
 import { fetchUsername } from '../Common/UserCommon'
-import AnalyticsCard from './AnalyticsCard';
-import axios from 'axios';
 
-export default function Carousel() {
-    const [favPints, setFavPints] = useState({});
-    const [strongestPint, setStrongestPint] = useState(null);
-    const [numPintsDrank, setNumPintsDrank] = useState(null);
+interface CarouselProps {
+  children: React.ReactNode;
+}
+
+export default function Carousel(props: CarouselProps) {
     const [username, setUsername] = useState<string | null>(null);
 
     // this is like onMounted() in vuejs
@@ -26,16 +23,9 @@ export default function Carousel() {
         if (usernameFromLocalStorage !== null) {
             setUsername(usernameFromLocalStorage);
         }
-      fetchAnalytics();
     }, []);
 
-    const fetchAnalytics= async () => {
-        try {
-            const response = await axios.get('/api/analytics', {params: username});
-        } catch (error) {
-            console.error('Error fetching data:', error);
-        }
-    };
+    
 
   return (
     <>
@@ -55,21 +45,7 @@ export default function Carousel() {
         modules={[EffectCoverflow, Pagination]}
         className="mySwiper"
       > 
-        <SwiperSlide>
-            <AnalyticsCard>
-                d
-            </AnalyticsCard>
-        </SwiperSlide>
-        <SwiperSlide>
-            <AnalyticsCard>
-                d
-            </AnalyticsCard>
-        </SwiperSlide>
-        <SwiperSlide>
-            <AnalyticsCard>
-                d
-            </AnalyticsCard>
-        </SwiperSlide>
+        {props.children}
       </Swiper>
     </>
   );

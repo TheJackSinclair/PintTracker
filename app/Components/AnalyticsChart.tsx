@@ -1,3 +1,5 @@
+{/* Chart component for a users weekly pint consumption. Usage: <AnalyticsChart weeklyPintHistory={pintsLastWeek}/>*/}
+
 import React from 'react';
 import {
   Chart as ChartJS,
@@ -29,7 +31,7 @@ export const options = {
     },
     title: {
       display: false,
-      text: 'Your pint history',
+      text: 'Pints demolished',
     },
   },
 };
@@ -45,7 +47,7 @@ export function AnalyticsChart(props : AnalyticsChartProps) {
         labels,
         datasets: [
           {
-            label: 'Your pint history',
+            label: 'Pints demolished',
             data: props.weeklyPintHistory,
             borderColor: 'rgb(255, 99, 132)',
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
