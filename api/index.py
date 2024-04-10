@@ -1,5 +1,5 @@
-from flask import Flask, request
-from api import beer_api, createAccount
+from flask import Flask, request, jsonify
+from api import createAccount
 import json
 import beer_api
 import accountFinder
@@ -10,8 +10,19 @@ app = Flask(__name__)
 
 @app.route("/api/account/create", methods=["POST"])
 def create():
-    data = request.get_json()
-    createAccount.create_account(data)
+    try:
+        data = request.get_json()
+        if not data or 'username' not in data or 'password' not in data:
+            return jsonify({'error': 'Missing username, password'}), 400
+
+        if accountFinder.user_exists(data["username"]):
+            return jsonify({'error': 'username exists'}), 400
+
+        createAccount.create_account(data)
+        return jsonify({'message': 'Account created successfully'}), 201
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return jsonify({'error': 'Internal Server Error'}), 500
 
 
 @app.route("/api/beer/search/<query>")

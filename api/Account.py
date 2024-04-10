@@ -5,10 +5,9 @@ from api.Pint import Pint
 
 
 class Account:
-    def __init__(self, username, password, email, member_since):
+    def __init__(self, username, password, member_since):
         self.username = username
         self.password = password
-        self.email = email
         self.member_since = member_since
         self.added = []
         self.added_you = []

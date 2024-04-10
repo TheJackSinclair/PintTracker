@@ -8,8 +8,8 @@ from api.Account import Account
 def create_account(data):
     username = data["username"]
     password = data["password"]
-    email = data["email"]
-    account = Account(username, password, email, datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
+
+    account = Account(username, password, datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
     added = []
     added_you = []
 
