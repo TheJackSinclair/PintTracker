@@ -28,6 +28,12 @@ def return_user_analytics(username):
     return json.dumps({'user_statistics': user_stats}, indent=4)
 
 
+@app.route("/api/analytics/last_week/<username>")
+def pints_per_day_last_week(username):
+    pints_per_day = userAnalytics.pints_per_day_last_week(username)
+    return pints_per_day
+
+
 @app.route("/api/python")
 def hello_world():
     return "<p>Hello, World!</p>"
