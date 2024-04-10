@@ -1,4 +1,9 @@
+import os
+from datetime import timedelta
+
 from flask import Flask, request, jsonify
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
+
 from api import createAccount
 import json
 import beer_api
@@ -6,6 +11,10 @@ import accountFinder
 import userAnalytics
 
 app = Flask(__name__)
+app.config["JWT_SECRET_KEY"] = "super-secret"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(days=31)
+
+jwt = JWTManager(app)
 
 
 @app.route("/api/account/create", methods=["POST"])
@@ -43,6 +52,33 @@ def return_user_analytics(username):
 def pints_per_day_last_week(username):
     pints_per_day = userAnalytics.pints_per_day_last_week(username)
     return pints_per_day
+
+
+@app.route("/api/account/login", methods=["POST"])
+def login():
+    data = request.get_json()
+    username = data["username"]
+    password = data["password"]
+    directory = "api/accounts"
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+    if accountFinder.user_exists(username):
+        account = accountFinder.get_user(username)
+        if account.password == password:
+            access_token = create_access_token(identity=account.username)
+            return jsonify(access_token=access_token)
+    else:
+        return "<p>Wrong username or password</p>"
+
+
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+@app.route("/api/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
 
 
 @app.route("/api/python")
