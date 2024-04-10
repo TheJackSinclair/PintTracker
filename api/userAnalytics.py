@@ -6,24 +6,25 @@ from flask import jsonify
 from api import accountFinder
 
 
+
 def pints_per_day_last_week(username):
     if not accountFinder.user_exists(username):
         return jsonify(error="User does not exist"), 404
 
-    account = open(os.path.join("api/accounts", f"{username}.json"), "r")
-    account = json.load(account)
-    today = datetime.now()
-    day_of_week = today.weekday()
-    last_monday = today - timedelta(days=(7 + day_of_week))
-    pints_per_day = []  # this represents each day of last week, monday through sunday
+    with open(os.path.join("api/accounts", f"{username}.json"), "r") as file:
+        account = json.load(file)
+
+
+    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    seven_days_ago = today - timedelta(days=6)
+    pints_per_day = [0] * 7
 
     for day in range(7):
-        day = last_monday + timedelta(days=day)
-        day = day.strftime("%Y-%m-%d")
-        pints_per_day.append(0)
-        for pint in account["pint_history"]:
-            if day == pint[:10]:
-                pints_per_day[-1] += 1
+        day_date = (seven_days_ago + timedelta(days=day)).strftime("%d/%m/%Y")
+        for pint_timestamp in account["pint_history"].keys():
+            pint_date = datetime.strptime(pint_timestamp, "%d/%m/%Y %H:%M:%S").strftime("%d/%m/%Y")
+            if day_date == pint_date:
+                pints_per_day[day] += 1
 
     return jsonify(pints_per_day=pints_per_day)
 
