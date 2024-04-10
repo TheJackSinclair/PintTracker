@@ -1,6 +1,5 @@
 class Pint:
-    def __init__(self, timestamp, name, full_name, abv, style):
-        self.timestamp = timestamp
+    def __init__(self, name, full_name, abv, style):
         self.name = name
         self.full_name = full_name
         self.abv = abv

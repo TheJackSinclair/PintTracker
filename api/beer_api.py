@@ -17,7 +17,7 @@ def search_data(query):
     data = pd.read_csv('beer_profile_and_ratings.csv')
 
     # Define the columns to search
-    search_columns = ['Name', 'Beer Name (Full)', 'ABV', 'Style']
+    search_columns = ['name', 'beer_name_full', 'abv', 'style']
 
     query = normalize(query)  # Normalize the search query
     results = []
