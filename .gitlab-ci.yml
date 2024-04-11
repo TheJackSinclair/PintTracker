@@ -16,10 +16,10 @@ install:
     - npm install
     - ls node_modules/.bin
 
-build:
-  stage: build
-  script:
-    - npm run build
+# build:
+#   stage: build
+#   script:
+#     - npm run build
 #dev:
 #  stage: dev
 #  script:
