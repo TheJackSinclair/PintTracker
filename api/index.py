@@ -25,7 +25,7 @@ def create():
             return jsonify({'error': 'Missing username, password'}), 400
 
         if accountFinder.user_exists(data["username"]):
-            return jsonify({'error': 'username exists'}), 400
+            return jsonify({'error': 'Username exists'}), 401
 
         createAccount.create_account(data)
         return jsonify({'message': 'Account created successfully'}), 201

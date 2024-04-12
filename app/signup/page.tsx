@@ -8,7 +8,6 @@ export default function Home() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
-    const [message, setMessage] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleSubmit = (event: FormEvent) => {
@@ -16,7 +15,7 @@ export default function Home() {
         const data = {username, password};
 
         if (confirmPassword != password) {
-            setMessage('Passwords do not match.')
+            setErrorMessage('Passwords do not match.')
             return;
         }
 
@@ -32,11 +31,12 @@ export default function Home() {
                 body: data
             })))
             .then(obj => {
-                if (obj.status === 200) {
-                    setMessage(obj.body.message); // Adjust based on your API response
+                if (obj.status === 201) {
                     window.location.href = '/login';
-                } else {
-                    throw new Error(obj.body.error || 'Failed to create account');
+                } else if (obj.status === 400) {
+                    throw new Error(obj.body.error || 'Missing Username or Password');
+                } else if (obj.status === 401) {
+                    throw new Error(obj.body.error || 'Username Taken');
                 }
             })
             .catch(error => {

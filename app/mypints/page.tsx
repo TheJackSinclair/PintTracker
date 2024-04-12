@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState, useEffect, use } from 'react';
+import React, { useState, useEffect } from 'react';
 import Carousel from '../Components/Carousel';
 import { Panel } from '../Components/Panel'
 import { AnalyticsChart } from '../Components/AnalyticsChart';
-import { fetchUsername } from '../Common/UserCommon'
+import {fetchUsername, fetchUserToken} from '../Common/UserCommon'
 import { SwiperSlide } from 'swiper/react';
 import AnalyticsCard from '../Components/AnalyticsCard';
 import 'swiper/css';
@@ -21,36 +21,41 @@ export default function MyPints() {
   const [dayMostDrank, setDayMostDrank] = useState({day: null, pints_drank: null});
 
   // this is like onMounted() in vuejs
-  useEffect(() => {
-    let usernameFromLocalStorage = fetchUsername(true);
-    // Update the state only if the name is not null
-    if (usernameFromLocalStorage !== null) {
-      setUsername(usernameFromLocalStorage);
-    }
-  }, []);
-  
+    useEffect(() => {
+        const fetchTokenAndUsername = async () => {
+            const token = fetchUserToken();
+            if (!token) {
+                window.location.href = '/login';
+            } else {
+                const usernameToken = fetchUsername(token);
+                setUsername(usernameToken);
+            }
+        };
 
-  useEffect(() => {
-    if (username !== null) {
-      console.log(username)
-      fetchAnalytics();
-      fetchPintsLastWeek();
-    }
-  }, [username]);
+        fetchTokenAndUsername();
+    }, []);
+
+    useEffect(() => {
+        console.log('Username' && username)
+        if (username !== null) {
+            console.log(username);
+            fetchAnalytics();
+            fetchPintsLastWeek();
+        }
+    }, [username]);
 
   const fetchAnalytics = async () => {
-    try {
-        axios.get('/api/analytics/' + username).then((response) => {
-          console.log(response.data)
-          const analytics = response.data['user_statistics']
-          setFavPint(analytics['favourite_pint']);
-          setNumPintsDrank(analytics['total_pints_drank']);
-          setDayMostDrank(analytics['most_drank_day']);
-          setStrongestPint(analytics['strongest_pint_drank']);
-        });
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
+      fetch('/api/analytics/' + username)
+          .then(response => response.json())
+          .then(data => {
+              console.log('Response Data', data);
+              const analytics = data['user_statistics'];
+              setFavPint(analytics['favourite_pint']);
+              setNumPintsDrank(analytics['total_pints_drank']);
+              setDayMostDrank(analytics['most_drank_day']);
+              setStrongestPint(analytics['strongest_pint_drank']);
+          })
+          .catch(error => console.error('Error fetching data:', error));
   };
 
   const fetchPintsLastWeek = async () => {
