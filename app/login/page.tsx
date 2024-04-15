@@ -30,7 +30,7 @@ export default function Home() {
             const data = await response.json();
             const token = (data.access_token).toString()
             localStorage.setItem('pint_token', token)
-            window.location.href= '/mypints';
+            window.location.href= '/';
         } catch (error: any) {
             setError(error.message || 'An error occurred');
         }

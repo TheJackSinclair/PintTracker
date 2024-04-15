@@ -23,7 +23,7 @@ const NavBar = () => {
     return (
         <nav
             className={"bg-pt-yellow shadow-lg min-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-3"}>
-            <a href="/homepage">
+            <a href="/">
                 <Image src={'/lightLogo.svg'} alt={'Pintlogo'} height={175} width={175} className={'drop-shadow-text'}/>
             </a>
             <a href="/usercentre">
@@ -42,7 +42,6 @@ const NavBar = () => {
                 <a href="/login">
                 <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 justify-end">login</button>
                 </a>)}
-
         </nav>)
 }
 

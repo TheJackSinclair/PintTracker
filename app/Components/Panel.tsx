@@ -1,6 +1,6 @@
 interface PanelProps {
     children: React.ReactNode;
-    width: 'small' | 'medium' | 'large'
+    width: 'small' | 'medium' | 'large' | 'extralarge';
     shadow: 'yellow' | 'orange'
     centered?: boolean
 }
@@ -11,6 +11,7 @@ const Panel = (props: PanelProps) => {
         small: 'lg:w-1/4',
         medium: 'lg:w-2/5',
         large: 'lg:w-3/4',
+        extralarge: 'lg:1/2'
     };
 
     const shadowColour = {
