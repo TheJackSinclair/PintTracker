@@ -4,7 +4,7 @@ from datetime import timedelta
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 
-from api import createAccount
+from api import createAccount, Account
 import json
 import beer_api
 import accountFinder
@@ -70,6 +70,21 @@ def login():
     else:
         return "<p>Wrong username or password</p>"
 
+
+@app.route("/api/friends/add/<friend_name>", methods=["POST"])
+@jwt_required()
+def add_friend(friend_name):
+    current_user = get_jwt_identity()
+    add = Account.add_friend(current_user, friend_name)
+    return add
+
+
+@app.route("/api/friends/remove/<friend_name>", methods=["POST"])
+@jwt_required()
+def remove_friend(friend_name):
+    current_user = get_jwt_identity()
+    Account.remove_friend(current_user, friend_name)
+    return "removed"
 
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.

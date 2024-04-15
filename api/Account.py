@@ -4,6 +4,62 @@ from api import accountFinder, toDict
 from api.Pint import Pint
 
 
+def add_friend(username, friend_name):
+    if accountFinder.user_exists(friend_name):
+        user_dict = accountFinder.get_user(username)
+        friend_dict = accountFinder.get_user(friend_name)
+
+        if friend_name in user_dict.added:
+            return "already added"
+
+        user_dict.added.append(friend_name)
+        if username not in friend_dict.added:
+            friend_dict.added_you.append(username)
+
+        user_path = accountFinder.get_path(username)
+        friend_path = accountFinder.get_path(friend_name)
+
+        to_write = [
+            {"path": user_path, "dict": user_dict},
+            {"path": friend_path, "dict": friend_dict}
+        ]
+
+        for entry in to_write:
+            with open(entry['path'], 'w') as file:
+                dict_entry = toDict.to_dict(entry['dict'])
+                json.dump(dict_entry, file, indent=4)
+
+    else:
+        print(f"User {friend_name} does not exist")
+
+    return "added"
+
+
+def remove_friend(username, friend_name):
+    if accountFinder.user_exists(friend_name):
+        user_dict = accountFinder.get_user(username)
+        friend_dict = accountFinder.get_user(friend_name)
+
+        user_dict.added.remove(friend_name)
+        friend_dict.added_you.remove(username)
+
+        user_path = accountFinder.get_path(username)
+        friend_path = accountFinder.get_path(friend_name)
+
+        to_write = [
+            {"path": user_path, "dict": user_dict},
+            {"path": friend_path, "dict": friend_dict}
+        ]
+
+        for entry in to_write:
+            with open(entry['path'], 'w') as file:
+                dict_entry = toDict.to_dict(entry['dict'])
+                json.dump(dict_entry, file, indent=4)
+
+    else:
+        print(f"User {friend_name} does not exist")
+
+
 class Account:
     def __init__(self, username, password, member_since):
         self.username = username
@@ -12,16 +68,6 @@ class Account:
         self.added = []
         self.added_you = []
         self.pint_history = {}
-
-    def add_user(self, username):
-        if accountFinder.user_exists(username):
-            self.added.append(username)
-            friend = accountFinder.get_user(username)
-            friend.added_you.append(self.username)
-            friend_path = accountFinder.get_path(username)
-            with open(friend_path, 'w') as file:
-                dict_entry = toDict.to_dict(friend)
-                json.dump(dict_entry, file, indent=4)
 
     def add_pint(self, data, timestamp):
         pint = json.loads(data, object_hook=lambda n: SimpleNamespace(**n))
