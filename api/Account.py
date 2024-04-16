@@ -60,6 +60,10 @@ def remove_friend(username, friend_name):
         print(f"User {friend_name} does not exist")
 
 
+def get_friend_list(username):
+    return accountFinder.get_user(username).added
+
+
 class Account:
     def __init__(self, username, password, member_since):
         self.username = username

@@ -86,6 +86,14 @@ def remove_friend(friend_name):
     Account.remove_friend(current_user, friend_name)
     return "removed"
 
+
+@app.route("/api/friends/friend_list", methods=["POST"])
+@jwt_required()
+def get_friend_list():
+    current_user = get_jwt_identity()
+    return Account.get_friend_list(current_user)
+
+
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.
 @app.route("/api/protected", methods=["GET"])
