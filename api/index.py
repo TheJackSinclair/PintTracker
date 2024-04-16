@@ -68,7 +68,7 @@ def login():
             access_token = create_access_token(identity=account.username)
             return jsonify(access_token=access_token)
     else:
-        return "<p>Wrong username or password</p>"
+        return jsonify({"error": "Wrong username or password"}), 401
 
 
 @app.route("/api/friends/add/<friend_name>", methods=["POST"])
