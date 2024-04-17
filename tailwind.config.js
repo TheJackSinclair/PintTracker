@@ -13,6 +13,7 @@ module.exports = {
       'pt-brown': '#4F200D',
       'pt-red': '#D23D1C',
       'pt-offwhite': '#FEFDFA',
+      'pt-black': '#000000',
       'pt-blue': '#1C90D2'
     },
     extend: {

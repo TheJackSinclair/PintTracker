@@ -5,14 +5,19 @@ import BeerGlass from "./Components/BeerGlass";
 import './beerglass.scss'
 import React, { useState } from 'react';
 import { Button } from "./Components/Button";
+import { Modal } from "./Components/Modal";
 
 export default function Home() {
 
-  const [showMain, setShowMain] = useState(false);
+  const [showModel, setShowModel] = useState(false);
 
     const handleClick = () => {
-        setShowMain(true);
+        setShowModel(true);
     };
+
+    const handleCloseModal = () => {
+      setShowModel(false);
+  };
 
   return (
   <main className="flex min-h-screen flex-col items-center justify-between p-20">
@@ -42,6 +47,16 @@ export default function Home() {
     <Button handleClick={handleClick}>
     I've drank a pint! <Image src={'/pint.svg'} alt={'Pint Logo'} className="mx-2" height={30} width={30}/>
     </Button>
+
+
+    {showModel && <Modal width={'medium'} onClose={handleCloseModal}>
+      <h1 className="text-5xl md:text-6xl">Add a Beer!</h1>
+          <label className="block text-sm font-medium leading-6 pt-brown">Brand/Name</label>
+          <div className="mt-2">
+            <input type="text" name="brand-name" id="brand-name" className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></input>
+          </div>
+        
+      </Modal>}
 
     </main>
   )
