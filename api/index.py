@@ -53,6 +53,10 @@ def pints_per_day_last_week(username):
     pints_per_day = userAnalytics.pints_per_day_last_week(username)
     return pints_per_day
 
+@app.route("/api/analytics/last_month/<username>")
+def pints_last_month(username):
+    pints_per_day = userAnalytics.pints_this_month(username)
+    return pints_per_day
 
 @app.route("/api/account/login", methods=["POST"])
 def login():
@@ -68,7 +72,7 @@ def login():
             access_token = create_access_token(identity=account.username)
             return jsonify(access_token=access_token)
     else:
-        return jsonify({"error": "Wrong username or password"}), 401
+        return "<p>Wrong username or password</p>"
 
 
 @app.route("/api/friends/add/<friend_name>", methods=["POST"])

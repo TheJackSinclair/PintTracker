@@ -10,7 +10,7 @@ export default function Home() {
     const [username, setUsername] = useState<string | null>(null);
     const [isOpen, setIsOpen] = useState(false);
     const [token, setToken] = useState<string | null>(null);
-    const [friends, setFriends] = useState<Account[]>([]);
+    const [friends, setFriends] = useState<String[]>([]);
 
     const openModal = () => setIsOpen(true);
     const closeModal = () => setIsOpen(false);

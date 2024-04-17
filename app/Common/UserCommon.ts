@@ -40,7 +40,7 @@ export const fetchUserToken = () => {
   return localStorage.getItem('pint_token');
 };
 
-export async function fetchFriendList(token: string): Promise<Account[]> {
+export async function fetchFriendList(token: string): Promise<String[]> {
 
   if (!token) {
     console.error('No token found, redirecting to login.');
@@ -60,6 +60,6 @@ export async function fetchFriendList(token: string): Promise<Account[]> {
     }
 
     // Cast the json response to Friend[]
-    const data: Account[] = await response.json();
+    const data = await response.json();
     return data;
 }

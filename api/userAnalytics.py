@@ -33,6 +33,27 @@ def pints_drank(user_pints) -> int:
     # returns the amount of total drank pints
     return len(user_pints)
 
+def pints_this_month(username):
+    if not accountFinder.user_exists(username):
+        return jsonify(error="User does not exist"), 404
+
+    with open(os.path.join("api/accounts", f"{username}.json"), "r") as file:
+        account = json.load(file)
+
+
+    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    seven_days_ago = today - timedelta(days=6)
+    pints_per_day = [0] * 7
+
+    for day in range(31):
+        day_date = (seven_days_ago + timedelta(days=day)).strftime("%d/%m/%Y")
+        for pint_timestamp in account["pint_history"].keys():
+            pint_date = datetime.strptime(pint_timestamp, "%d/%m/%Y %H:%M:%S").strftime("%d/%m/%Y")
+            if day_date == pint_date:
+                pints_per_day[day] += 1
+
+    return jsonify(pints_per_day=pints_per_day)
+
 
 def most_drank_day(user_pints):
     if len(user_pints) == 0:

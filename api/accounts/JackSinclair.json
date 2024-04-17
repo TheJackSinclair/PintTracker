@@ -6,5 +6,12 @@
     "added_you": [
         "declan1"
     ],
-    "pint_history": {}
+    "pint_history": {
+        "09/04/2024 19:59:33": {
+        "timestamp": "09/04/2024 19:59:33",
+        "name": "Amber",
+        "full_name": "Alaskan Brewing Co.",
+        "abv": 5.3,
+        "style": "Altbier"
+    }}
 }
