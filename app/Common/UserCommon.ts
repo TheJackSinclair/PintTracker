@@ -1,6 +1,20 @@
 // fetch name from lst, which was set upon login
 
+export interface Pint {
+  name: string;
+  full_name: string;
+  abv: number;   // Assuming abv is a floating-point number
+  style: string;
+}
 
+export interface Account {
+  username: string;
+  password: string;  // Normally you wouldn't store passwords on client-side objects for security reasons.
+  member_since: string;
+  added: string[];
+  added_you: string[];
+  pint_history: { [timestamp: string]: Pint };
+}
 
 export const fetchUsername = (token: string): any => {
   console.log(token)
@@ -25,3 +39,27 @@ export const fetchUsername = (token: string): any => {
 export const fetchUserToken = () => {
   return localStorage.getItem('pint_token');
 };
+
+export async function fetchFriendList(token: string): Promise<Account[]> {
+
+  if (!token) {
+    console.error('No token found, redirecting to login.');
+    // Perform a redirect to login or handle lack of token appropriately
+    return [];
+  }
+    const response = await fetch('/api/friends/friend_list', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`, // Include the JWT in the Authorization header
+        'Content-Type': 'application/json',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // Cast the json response to Friend[]
+    const data: Account[] = await response.json();
+    return data;
+}

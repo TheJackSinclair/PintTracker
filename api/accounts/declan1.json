@@ -3,7 +3,9 @@
     "password": "password123",
     "email": "declan@gmail.com",
     "member_since": "09/04/2024 15:10:14",
-    "added": [],
+    "added": [
+        "JackSinclair"
+    ],
     "added_you": [],
     "pint_history": {
         "09/04/2024 19:59:33": {
