@@ -99,8 +99,8 @@ export default function Home() {
 
     return (
         <main className="flex min-h-screen flex-col items-center justify-between p-24">
-            <Panel width={'small'} shadow={'yellow'}>
-                <h1 className="font-bold text-pt-brown text-6xl mb-6 drop-shadow-[2px_2px_var(--tw-shadow-color)] text-center">{username}</h1>
+            <Panel width={'medium'} shadow={'yellow'}>
+                <h1 className="font-bold text-pt-brown text-6xl mb-6 drop-shadow-[2px_2px_var(--tw-shadow-color)] text-center text-[3rem]">{username}</h1>
 
                 <div className={'grid grid-cols-8 grid-rows-1 gap-3 '}>
                     <Image src={'/pencil.svg'} alt={'Pencil Icon'} width={35} height={35}
@@ -182,7 +182,7 @@ export default function Home() {
                     <h1 className="font-bold text-pt-brown text-2xl lg:text-6xl  drop-shadow-[2px_2px_var(--tw-shadow-color)] text-center">Delete Account</h1>
 
                     <form className={'self-end mb-4'} onSubmit={handleDeleteSubmit}>
-                        <button className="bg-pt-red text-pt-offwhite font-bold font-bold rounded-2xl p-4 min-w-full"
+                        <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl p-4 min-w-full"
                                 type={'submit'} onClick={handleDeleteSubmit}>Delete Account
                         </button>
                     </form>
