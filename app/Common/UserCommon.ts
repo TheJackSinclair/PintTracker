@@ -1,5 +1,7 @@
 // fetch name from lst, which was set upon login
 
+import {useEffect, useState} from "react";
+
 export interface Pint {
   name: string;
   full_name: string;
@@ -59,7 +61,51 @@ export async function fetchFriendList(token: string): Promise<String[]> {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
-    // Cast the json response to Friend[]
     const data = await response.json();
     return data;
+}
+
+export const useAuth = () => {
+  const [username, setUsername] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
+  useEffect(() => {
+    const fetchTokenAndUsername = async () => {
+      const fetchedToken = await fetchUserToken();
+      if (!fetchedToken) {
+        window.location.href = '/login';
+      } else {
+        const usernameFromToken = await fetchUsername(fetchedToken);
+        setUsername(usernameFromToken);
+        setToken(fetchedToken);
+      }
+    };
+
+    fetchTokenAndUsername();
+  }, []);
+
+
+  return { token, username };
+}
+
+export const useFetchFriendsList = (token: string | null) => {
+  const [friends, setFriends] = useState<String[]>([]);
+
+  const fetchFriends = () => {
+    if (token) {
+      fetchFriendList(token)
+          .then(setFriends)
+          .catch(console.error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFriends();
+  }, [token]);
+
+  return { friends, fetchFriends }; // Expose fetchFriends for manual triggering
+};
+
+export const logout = async () => {
+  localStorage.removeItem('pint_token');
+  window.location.reload();
 }

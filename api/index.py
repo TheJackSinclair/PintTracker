@@ -4,7 +4,7 @@ from datetime import timedelta
 from flask import Flask, request, jsonify
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity, JWTManager
 
-from api import createAccount, Account
+from api import createAccount, Account, deleteAccount
 import json
 import beer_api
 import accountFinder
@@ -34,6 +34,12 @@ def create():
         return jsonify({'error': 'Internal Server Error'}), 500
 
 
+@app.route("/api/account/delete/<accountname>", methods=["POST"])
+def delete(accountname):
+    deleteAccount.delete_account(accountname)
+    return jsonify({'message': 'Account deleted successfully'}), 201
+
+
 @app.route("/api/beer/search/<query>")
 def search_beer(query):
     results = beer_api.search_data(query)
@@ -53,10 +59,12 @@ def pints_per_day_last_week(username):
     pints_per_day = userAnalytics.pints_per_day_last_week(username)
     return pints_per_day
 
+
 @app.route("/api/analytics/last_month/<username>")
 def pints_last_month(username):
     pints_per_day = userAnalytics.pints_this_month(username)
     return pints_per_day
+
 
 @app.route("/api/account/login", methods=["POST"])
 def login():
@@ -72,7 +80,7 @@ def login():
             access_token = create_access_token(identity=account.username)
             return jsonify(access_token=access_token)
     else:
-        return "<p>Wrong username or password</p>"
+        return "Wrong username or password"
 
 
 @app.route("/api/friends/add/<friend_name>", methods=["POST"])
@@ -106,8 +114,3 @@ def protected():
     # Access the identity of the current user with get_jwt_identity
     current_user = get_jwt_identity()
     return jsonify(logged_in_as=current_user), 200
-
-
-@app.route("/api/python")
-def hello_world():
-    return "<p>Hello, World!</p>"

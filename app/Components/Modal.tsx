@@ -13,9 +13,9 @@ const Modal = (props: modalProps) => {
         extralarge: 'lg:1/2'
     };
 
-    const modalClassName = `absolute grid bg-pt-offwhite rounded-[30px] p-8 border-6 border-pt-brown min-h-[20rem] ${sizeClasses[props.width]}`;
+    const modalClassName = `absolute grid bg-pt-offwhite rounded-[30px] p-8 border-6 border-pt-brown min-h-[20rem] ${sizeClasses[props.width]} max-h-[80%] overflow-auto`;
 
-    const backdropStyle = `min-h-screen fixed inset-0 bg-pt-black bg-opacity-40 z-50 flex items-center justify-center p-4 backdrop-blur-sm`;
+    const backdropStyle = `fixed inset-0 bg-pt-black bg-opacity-40 z-50 flex items-center justify-center p-4 backdrop-blur-sm `;
 
     return (
         <div className={backdropStyle}>

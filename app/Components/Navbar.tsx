@@ -1,8 +1,7 @@
 'use client'
 
 import Image from "next/image";
-import {fetchUserToken} from "@/app/Common/UserCommon";
-
+import {fetchUserToken, logout} from "@/app/Common/UserCommon";
 
 const NavBar = () => {
 
@@ -13,11 +12,6 @@ const NavBar = () => {
         }
         return 'logout'
 
-    }
-
-    const logout = async () => {
-        localStorage.removeItem('pint_token');
-        window.location.reload();
     }
 
     return (

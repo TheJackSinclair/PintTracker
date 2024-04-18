@@ -6,14 +6,12 @@ from flask import jsonify
 from api import accountFinder
 
 
-
 def pints_per_day_last_week(username):
     if not accountFinder.user_exists(username):
         return jsonify(error="User does not exist"), 404
 
     with open(os.path.join("api/accounts", f"{username}.json"), "r") as file:
         account = json.load(file)
-
 
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     seven_days_ago = today - timedelta(days=6)
@@ -33,13 +31,13 @@ def pints_drank(user_pints) -> int:
     # returns the amount of total drank pints
     return len(user_pints)
 
+
 def pints_this_month(username):
     if not accountFinder.user_exists(username):
         return jsonify(error="User does not exist"), 404
 
     with open(os.path.join("api/accounts", f"{username}.json"), "r") as file:
         account = json.load(file)
-
 
     today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
     seven_days_ago = today - timedelta(days=6)
@@ -62,19 +60,16 @@ def most_drank_day(user_pints):
     day_counter = {}
 
     for key in user_pints.keys():
-        # converts pint to dictionary
+
         pint = vars(user_pints[key])
 
-        # gets the pint date
         pint_date = pint['timestamp'][:10]
 
-        # check the frequency of the pint date and adds it to the counter
         if pint_date in day_counter:
             day_counter[pint_date] += 1
         else:
             day_counter[pint_date] = 1
 
-    # returns the most drank day, along with its frequency
     day = max(day_counter, key=day_counter.get)
     most_drank_day_frequency = day_counter[day]
 

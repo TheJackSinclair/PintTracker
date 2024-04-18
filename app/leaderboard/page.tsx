@@ -1,128 +1,109 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import Carousel from '../Components/Carousel';
-import { LeaderboardPanel } from '../Components/LeaderboardPanel'
-import {Account, fetchFriendList, fetchUsername, fetchUserToken} from "@/app/Common/UserCommon";
+import React, {useState, useEffect} from 'react';
+import {LeaderboardPanel} from '../Components/LeaderboardPanel'
+import { useAuth, useFetchFriendsList} from "@/app/Common/UserCommon";
 import axios from 'axios';
 
+type Friend = {
+    name: string;
+    pints_drank: number;
+};
+
 export default function Leaderboard() {
-  const [username, setUsername] = useState<string | null>(null);
-  const [token, setToken] = useState<string | null>(null);
-  const [friends, setFriends] = useState<String[]>([]);
-  const [friendsData, setFriendsData] = useState<{ name: String; pints_drank: any; }[]>([]);
-  const [selTab, setSelTab] = useState<string>('Lifetime');
+    const [friendsData, setFriendsData] = useState<Friend[]>([]);
+    const [selTab, setSelTab] = useState<string>('Lifetime');
 
-  // this is like onMounted() in vuejs
-  useEffect(() => {
-    const fetchTokenAndUsername = async () => {
-        const fetchedToken = await fetchUserToken(); // Ensure you await here.
-        if (!fetchedToken) {
-            window.location.href = '/login';
-        } else {
-            const usernameFromToken = await fetchUsername(fetchedToken); // Ensure you await here too.
-            setUsername(usernameFromToken);
-            setToken(fetchedToken);
-        }
+    const {username, token} = useAuth()
+
+    const {friends} = useFetchFriendsList(token)
+
+    const fetchFriendData = async (friend: string, endpoint: string): Promise<Friend> => {
+        const response = await axios.get(`/api/analytics/${endpoint}/${friend}`);
+        const pints_drank = response.data['pints_per_day'].reduce((total: number, current: number) => total + current, 0);
+        return {
+            name: friend,
+            pints_drank,
+        };
     };
-    fetchTokenAndUsername();
-}, []);
+
+    const fetchLifetimeData = async (friend: string): Promise<Friend> => {
+        const response = await fetch(`/api/analytics/${friend}`);
+        const data = await response.json();
+        return {
+            name: friend,
+            pints_drank: data['user_statistics']['total_pints_drank'],
+        };
+    };
+
+    const sortData = (data: Friend[]) => data.sort((a, b) => b.pints_drank - a.pints_drank);
 
     useEffect(() => {
-      if (token) {
-          fetchFriendList(token)
-              .then(setFriends)
-              .catch(console.error);
-      }
-    }, [token]);
+        const fetchData = async () => {
+            try {
+                const dataPromises = friends.map(friend => {
+                    switch (selTab.toLowerCase()) {
+                        case 'lifetime':
+                            return fetchLifetimeData(friend.toString());
+                        case 'monthly':
+                            return fetchFriendData(friend.toString(), 'last_month');
+                        default:
+                            return fetchFriendData(friend.toString(), 'last_week');
+                    }
+                });
 
-    useEffect(() => {
-      if (selTab.toLowerCase() == 'lifetime') {
-        Promise.all(
-          friends.map((friend) =>
-            axios.get('/api/analytics/' + friend).then((response) => ({
-              name: friend,
-              pints_drank: response.data['user_statistics']['total_pints_drank'],
-            }))
-          )
-        )
-        .then((rankings) => {
-          rankings.sort((a, b) => b.pints_drank - a.pints_drank);
-          setFriendsData(rankings);
-        })
-        .catch((error) => console.error('Error fetching analytics data:', error));
-      } else if (selTab.toLowerCase() == 'monthly') {
-        Promise.all(
-          friends.map((friend) =>
-          axios.get('/api/analytics/last_week/' + friend).then((response) => ({
-              name: friend,
-              pints_drank: response.data['pints_per_day'].reduce((accumulator: any, currentValue: any) => accumulator + currentValue, 0),
-            }))
-          )
-        )
-        .then((rankings) => {
-          rankings.sort((a, b) => b.pints_drank - a.pints_drank);
-          setFriendsData(rankings);
-        })
-        .catch((error) => console.error('Error fetching analytics data:', error));
-      } else {
-        Promise.all(
-          friends.map((friend) =>
-          axios.get('/api/analytics/last_month/' + friend).then((response) => ({
-              name: friend,
-              pints_drank: response.data['pints_per_day'].reduce((accumulator: any, currentValue: any) => accumulator + currentValue, 0),
-            }))
-          )
-        )
-        .then((rankings) => {
-          rankings.sort((a, b) => b.pints_drank - a.pints_drank);
-          setFriendsData(rankings);
-        })
-        .catch((error) => console.error('Error fetching analytics data:', error));
-      }
+                const data = await Promise.all(dataPromises);
+                setFriendsData(sortData(data));
+            } catch (error) {
+                console.error('Error fetching analytics data:', error);
+            }
+        };
+
+        fetchData();
     }, [friends, selTab]);
 
+
     const handleTabClick = (tab: string) => {
-      setSelTab(tab);
-      console.log(tab)
+        setSelTab(tab);
+        console.log(tab)
     };
 
-  return (
-    <main className="min-h-screen p-10">
-      {username ? (
-        <div className="my-5 flex flex-col">
-          <div className='flex mb-16'>
-            <LeaderboardPanel onTabClick={handleTabClick} width={"large"} shadow={"orange"}>
-              <div className="h-max">
-                <h5 className="text-5xl font-bold tracking-tight dark:text-white text-pt-brown break-words">Leaderboard</h5>
-              </div>
-              <div className="mt-4">
-                <table className='w-full'>
-                  <thead>
-                    <tr>
-                      <th className='w-1/4 text-left text-pt-brown'>Rank</th>
-                      <th className='w-1/3 text-left text-pt-brown'>Name</th>
-                      <th className='w-1/3 text-center text-pt-brown'>Pints Drank</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {friendsData.map((friend, index) => (
-                      <tr key={index}>
-                        <td className="text-pt-brown font-extrabold text-lg">{index+1}</td>
-                        <td className="text-pt-brown font-extrabold text-lg">{friend.name}</td>
-                        <td className="text-pt-brown font-extrabold text-lg text-center" >{friend.pints_drank}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </LeaderboardPanel>
-          </div>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+    return (
+        <main className="min-h-screen p-16">
+            {username ? (
+                <div className="m-2 flex ">
+                    <LeaderboardPanel onTabClick={handleTabClick}>
+                        <div className="h-max">
+                            <h5 className="md:text-5xl font-bold tracking-tight dark:text-white text-pt-brown break-words">{selTab} Leaderboard</h5>
+                        </div>
+                        <div className="mt-4">
+                            {friends[0] ?
+                                <table className='w-full'>
+                                <thead>
+                                <tr>
+                                    <th className='w-1/4 text-left text-pt-brown'>Rank</th>
+                                    <th className='w-1/3 text-left text-pt-brown'>Name</th>
+                                    <th className='w-1/3 text-center text-pt-brown'>Pints Drank</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                { friendsData.map((friend, index) => (
+                                    <tr key={index}>
+                                        <td className="text-pt-brown font-extrabold md:text-lg">{index + 1}</td>
+                                        <td className="text-pt-brown font-extrabold md:text-lg">{friend.name}</td>
+                                        <td className="text-pt-brown font-extrabold md:text-lg text-center">{friend.pints_drank ? friend.pints_drank : 0}</td>
+                                    </tr>
+                                ))}
+                                </tbody>
+                            </table>
+                                : <h5 className="md:text-2xl font-bold tracking-tight dark:text-white text-pt-brown break-words">You dont have any friends, what are you? an alcoholic?</h5>}
+                        </div>
+                    </LeaderboardPanel>
+                </div>
+            ) : (
+                <p>Loading...</p>
+            )}
 
-    </main>
-  );
+        </main>
+    );
 }

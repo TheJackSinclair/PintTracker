@@ -20,4 +20,4 @@ def create_account(data):
     with open(os.path.join(directory, f"{account.username}.json"), "w") as f:
         json.dump(account.__dict__, f, indent=4)
 
-    return "<p>Account created</p>"
+    return "Account created"

@@ -1,7 +1,6 @@
+import os
 import json
 import toDict
-import os
-
 import accountFinder as find
 
 
@@ -21,6 +20,3 @@ def delete_account(accountname):
 
     os.remove(find.get_path(accountname))
 
-
-if __name__ == "__main__":
-    delete_account("declan1")

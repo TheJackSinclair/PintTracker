@@ -30,7 +30,7 @@ def add_friend(username, friend_name):
                 json.dump(dict_entry, file, indent=4)
 
     else:
-        print(f"User {friend_name} does not exist")
+        return f"User {friend_name} does not exist"
 
     return "added"
 
@@ -57,7 +57,7 @@ def remove_friend(username, friend_name):
                 json.dump(dict_entry, file, indent=4)
 
     else:
-        print(f"User {friend_name} does not exist")
+        return f"User {friend_name} does not exist"
 
 
 def get_friend_list(username):
