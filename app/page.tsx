@@ -3,13 +3,18 @@ import Image from "next/image";
 import { Panel } from "./Components/Panel";
 import BeerGlass from "./Components/BeerGlass";
 import './beerglass.scss'
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from "./Components/Button";
 import { Modal } from "./Components/Modal";
+import { AnalyticsChart } from "./Components/AnalyticsChart";
+import axios from "axios";
+import { fetchUserToken, fetchUsername } from "./Common/UserCommon";
 
 export default function Home() {
 
   const [showModel, setShowModel] = useState(false);
+  const [username, setUsername] = useState<string | null>(null);
+  const [pintsLastWeek, setPintsLastWeek] = useState([]);
 
     const handleClick = () => {
         setShowModel(true);
@@ -18,6 +23,50 @@ export default function Home() {
     const handleCloseModal = () => {
       setShowModel(false);
   };
+
+  useEffect(() => {
+    const fetchTokenAndUsername = async () => {
+        const token = fetchUserToken();
+        if (!token) {
+            window.location.href = '/login';
+        } else {
+            const usernameToken = fetchUsername(token);
+            setUsername(usernameToken);
+        }
+    };
+
+    fetchTokenAndUsername();
+  }, []);
+
+  useEffect(() => {
+    console.log('Username' && username)
+    if (username !== null) {
+        console.log(username);
+        fetchAnalytics();
+        fetchPintsLastWeek();
+    }
+  }, [username]);
+
+  const fetchAnalytics = async () => {
+  fetch('/api/analytics/' + username)
+      .then(response => response.json())
+      .then(data => {
+          console.log('Response Data', data);
+      })
+      .catch(error => console.error('Error fetching data:', error));
+  };
+
+  const fetchPintsLastWeek = async () => {
+  try {
+    axios.get('/api/analytics/last_week/' + username).then((response) => {
+      setPintsLastWeek(response.data['pints_per_day']);
+    });
+    
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  }
+  };
+
 
   return (
   <main className="flex min-h-screen flex-col items-center justify-between p-20">
@@ -40,6 +89,7 @@ export default function Home() {
       <a href="/mypints"  className="flex flex-col items-center justify-between">
         <Panel width={"extralarge"} shadow={"orange"}>
           <h5 className="mb-2 text-4xl font-bold tracking-tight dark:text-white">MyPints Analytics</h5>
+          <AnalyticsChart weeklyPintHistory={pintsLastWeek}/>
         </Panel>
       </a>
     </div>
