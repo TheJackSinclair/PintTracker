@@ -38,4 +38,4 @@ const Modal = (props: modalProps) => {
         </div>
     )
 }
-export {Modal}
+export { Modal, type modalProps };

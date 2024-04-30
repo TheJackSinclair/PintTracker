@@ -1,0 +1,58 @@
+{
+    "username": "test",
+    "password": "test",
+    "member_since": "15/04/2024 13:37:37",
+    "added": [],
+    "added_you": [],
+    "pint_history": {
+        "16/04/2024 19:59:33": {
+            "timestamp": "09/04/2024 19:59:33",
+            "name": "Amber",
+            "full_name": "Alaskan Brewing Co.",
+            "abv": 5.3,
+            "style": "Altbier"
+        },
+        "15/04/2024 19:59:34": {
+            "timestamp": "09/04/2024 19:59:34",
+            "name": "Amber",
+            "full_name": "Alaskan Brewing Co.",
+            "abv": 5.3,
+            "style": "Altbier"
+        },
+        "16/04/2024 19:59:35": {
+            "timestamp": "09/04/2024 19:59:35",
+            "name": "Amber",
+            "full_name": "Alaskan Brewing Co.",
+            "abv": 5.3,
+            "style": "Altbier"
+        },
+        "14/04/2024 19:59:36": {
+            "timestamp": "09/04/2024 19:59:36",
+            "name": "Amber",
+            "full_name": "Alaskan Brewing Co.",
+            "abv": 5.3,
+            "style": "Altbier"
+        },
+        "17/04/2024 19:59:37": {
+            "timestamp": "09/04/2024 19:59:37",
+            "name": "Amber",
+            "full_name": "Alaskan Brewing Co.",
+            "abv": 5.3,
+            "style": "Altbier"
+        },
+        "13/04/2024 19:59:38": {
+            "timestamp": "09/04/2024 19:59:38",
+            "name": "Double Bag",
+            "full_name": "Long Trail Brewing Co.",
+            "abv": 7.2,
+            "style": "Altbier"
+        },
+        "13/04/2024 19:59:39": {
+            "timestamp": "09/04/2024 19:59:39",
+            "name": "Long Trail Ale",
+            "full_name": "Long Trail Brewing Co.",
+            "abv": "5",
+            "style": "Altbier"
+        }
+    }
+}

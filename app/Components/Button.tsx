@@ -13,4 +13,4 @@ const Button: React.FC<buttonProps> = ({ children, handleClick }) => {
             </button>
     )
 }
-export {Button}
+export { Button, type buttonProps };
