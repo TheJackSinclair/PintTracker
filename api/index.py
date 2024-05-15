@@ -6,9 +6,9 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 
 from api import createAccount, Account, deleteAccount
 import json
-import beer_api
-import accountFinder
-import userAnalytics
+from api import beer_api
+from api import accountFinder
+from api import userAnalytics
 
 app = Flask(__name__)
 app.config["JWT_SECRET_KEY"] = "super-secret"

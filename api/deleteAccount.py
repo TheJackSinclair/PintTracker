@@ -1,7 +1,7 @@
 import os
 import json
-import toDict
-import accountFinder as find
+from api import toDict
+from api import accountFinder as find
 
 
 def delete_account(accountname):
