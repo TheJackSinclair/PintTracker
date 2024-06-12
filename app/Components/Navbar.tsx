@@ -1,13 +1,14 @@
 'use client'
 
 import Image from "next/image";
-import {fetchUserToken, logout} from "@/app/Common/UserCommon";
+import {useAuth} from "@/app/AuthProvider";
+import {signOutUser} from "@/app/firebase/firebaseUtils";
 
 const NavBar = () => {
 
     const textDecider = () => {
-        const token = fetchUserToken();
-        if (!token) {
+        const {currentUser} = useAuth();
+        if (!currentUser) {
             return 'login'
         }
         return 'logout'
@@ -32,9 +33,11 @@ const NavBar = () => {
             </a>
             {textDecider() == 'logout' ? (
                 <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 justify-end"
-                        onClick={logout}>logout</button>) : (
+                        onClick={signOutUser}>logout</button>) : (
                 <a href="/login">
-                <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 justify-end">login</button>
+                    <button
+                        className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 justify-end">login
+                    </button>
                 </a>)}
         </nav>)
 }

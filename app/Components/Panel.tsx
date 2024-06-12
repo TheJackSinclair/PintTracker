@@ -21,12 +21,12 @@ const Panel = (props: PanelProps) => {
     }
 
 
-    const panelClassName = `grid ${props.blur ? 'blur' : ''} ${props.centered ? 'm-auto' : ''} bg-pt-offwhite rounded-[30px] p-8 border-6 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]} shadow-3xl ${shadowColour[props.shadow]}`;
+    const panelClassName = `grid ${props.blur ? 'blur' : ''} ${props.centered ? 'm-auto' : ''} bg-pt-offwhite rounded-[30px] p-8 border-4 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]} shadow-3xl ${shadowColour[props.shadow]}`;
 
     return (
-            <div className={panelClassName}>
-                {props.children}
-            </div>
+        <div className={panelClassName}>
+            {props.children}
+        </div>
     )
 }
 export {Panel}

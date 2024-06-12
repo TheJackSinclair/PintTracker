@@ -1,52 +1,45 @@
 'use client'
 
 import {Panel} from "@/app/Components/Panel";
-import {useState} from "react";
+import React, {useState} from "react";
+import {signIn} from "@/app/firebase/firebaseUtils";
+import {useAuth} from "@/app/AuthProvider";
 
 export default function Home() {
-
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
 
-    const handleLogin = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
+    const {currentUser, loading} = useAuth();
 
-        try {
-            const response = await fetch('/api/account/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({username, password}),
-            });
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Login failed');
-            }
+    {
+        currentUser ? window.location.href = '/' : null
+    }
 
-            const data = await response.json();
-            const token = (data.access_token).toString()
-            if (typeof window !== 'undefined') {
-            localStorage.setItem('pint_token', token)}
-            window.location.href= '/';
-        } catch (error: any) {
-            setError(error.message || 'An error occurred');
+    const handleSignIn = async (event: React.FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        const user = await signIn(email, password);
+        if (user) {
+            window.location.href = '/'
+        } else {
+            alert("Failed to log in");
         }
     };
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <main className="flex min-h-screen flex-col items-center justify-between lg:p-24 p-12">
             <Panel width={'medium'} shadow={'yellow'}>
                 <p className={'text-pt-brown text-4xl font-bold'}>Sign In</p>
-                <form onSubmit={handleLogin} className={'block space-y-5'}>
+                <form className={'block space-y-5'} onSubmit={handleSignIn}>
                     <div>
                         <input type="text"
                                className="border text-gray-900 text-sm rounded-lg w-full p-4"
-                               placeholder="Username"
-                               onChange={(e) => setUsername(e.target.value)} required/>
+                               placeholder="Email"
+                               onChange={(e) => setEmail(e.target.value)} required/>
                     </div>
                     <div>
                         <input type="password"
@@ -55,7 +48,8 @@ export default function Home() {
                                onChange={(e) => setPassword(e.target.value)} required/>
                     </div>
                     {error && <p className="border text-pt-red text-center font-bold rounded-2xl">{error}</p>}
-                    <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 min-w-full" type={'submit'} onClick={handleLogin}>
+                    <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 min-w-full"
+                            type={'submit'}>
                         Sign In
                     </button>
                 </form>

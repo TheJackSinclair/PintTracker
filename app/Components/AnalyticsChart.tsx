@@ -1,77 +1,118 @@
-{/* Chart component for a users weekly pint consumption. Usage: <AnalyticsChart weeklyPintHistory={pintsLastWeek}/>*/}
+import {PintEntry} from "@/app/Common/BeerCommon";
+
+{/* Chart component for a users weekly pint consumption. Usage: <AnalyticsChart weeklyPintHistory={pintsLastWeek}/>*/
+}
 
 import React from 'react';
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
+    Chart as ChartJS,
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend,
 } from 'chart.js';
-import { Line } from 'react-chartjs-2';
+import {Line} from 'react-chartjs-2';
 
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend
+    CategoryScale,
+    LinearScale,
+    PointElement,
+    LineElement,
+    Title,
+    Tooltip,
+    Legend
 );
 
 export const options = {
-  responsive: true,
-  plugins: {
-    legend: {
-      position: 'top' as const,
+    responsive: true,
+    plugins: {
+        legend: {
+            position: 'top' as const,
+        },
+        title: {
+            display: false,
+            text: 'Pints demolished',
+        },
     },
-    title: {
-      display: false,
-      text: 'Pints demolished',
-    },
-  },
 };
 
-function getLabelsForWeek(dayIndex: number) {
-  const baseLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const todayIndex = dayIndex; // In JavaScript, 0 is Sunday, 1 is Monday, etc.
-  const labels = [];
-
-  for (let i = 1; i <= 7; i++) {
-    const labelIndex = (todayIndex + i) % 7;
-    labels.push(baseLabels[labelIndex]);
-  }
-
-  const saturdayIndex = (todayIndex + 6) % 7;
-  labels[saturdayIndex] = labels[saturdayIndex] + ' 🤙';
-
-  return labels;
-}
-
-
 interface AnalyticsChartProps {
-    weeklyPintHistory: Object;
+    weeklyPintHistory: PintEntry[];
 }
 
-export function AnalyticsChart(props : AnalyticsChartProps) {
-  const today = new Date().getDay(); // get the current day index
-  const reorderedLabels = getLabelsForWeek(today);
+function getDayOfWeek(d: Date): string {
+    return d.toLocaleDateString('en-GB', {weekday: 'long'});
+}
 
-  const data = {
-    labels: reorderedLabels, // use the reordered labels here
-    datasets: [
-      {
-        label: 'Pints demolished',
-        data: props.weeklyPintHistory,
-        borderColor: 'rgb(255, 99, 132)',
-        backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      },
-    ],
-  };
+function getLabelsAndData(pintEntries: PintEntry[]) {
+    const labels: string[] = [];
+    const data: number[] = new Array(7).fill(0);
+    const today = new Date();
+    const lastWeekDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6);
 
-  return <Line options={options} data={data} />;
+    // Create labels for the past 7 days as days of the week
+    for (let i = 0; i < 7; i++) {
+        const date = new Date(lastWeekDate.getFullYear(), lastWeekDate.getMonth(), lastWeekDate.getDate() + i);
+        labels.push(getDayOfWeek(date)); // Get the day of the week
+    }
+
+    pintEntries.forEach(entry => {
+        const entryDayOfWeek = getDayOfWeek(entry.timestamp);
+        const index = labels.indexOf(entryDayOfWeek);
+        if (index !== -1) {
+            data[index]++;
+        }
+    });
+
+    return {labels, data};
+}
+
+export function AnalyticsChart({weeklyPintHistory}: AnalyticsChartProps) {
+    const {labels, data} = getLabelsAndData(weeklyPintHistory);
+
+    const chartData = {
+        labels,
+        datasets: [
+            {
+                label: 'Pints demolished',
+                data,
+                borderColor: 'rgb(255, 99, 132)',
+                backgroundColor: 'rgba(255, 99, 132, 0.5)',
+            },
+        ],
+    };
+
+    const options = {
+        responsive: true,
+        plugins: {
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Pint Consumption Over the Last Week'
+            }
+        },
+        scales: {
+            x: {
+                title: {
+                    display: true,
+                    text: 'Day of the Week'
+                }
+            },
+            y: {
+                title: {
+                    display: true,
+                    text: 'Number of Pints'
+                },
+                beginAtZero: true
+            }
+        }
+    };
+
+    // @ts-ignore
+    return <Line options={options} data={chartData}/>;
 }
