@@ -1,56 +1,61 @@
 'use client'
 
 import {Panel} from "@/app/Components/Panel";
-import {FormEvent, useState} from "react";
+import React, {useState} from "react";
+import {signUp} from "@/app/firebase/firebaseUtils";
+import {useAuth} from "@/app/AuthProvider";
+import {doc, setDoc} from "firebase/firestore";
+import {db} from "@/app/firebase/firebase-config";
+import {serverTimestamp} from "@firebase/firestore";
+
 
 export default function Home() {
-
+    const [email, setEmail] = useState<string>('');
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [confirmPassword, setConfirmPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState('');
+    const {currentUser, loading} = useAuth();
 
-    const handleSubmit = (event: FormEvent) => {
+    if (loading) {
+        return <div>Loading...</div>;
+    }
+
+    {
+        currentUser ? window.location.href = '/' : null
+    }
+
+    const handleSignUp = async (event: React.FormEvent) => {
         event.preventDefault();
-        const data = {username, password};
-
-        if (confirmPassword != password) {
-            setErrorMessage('Passwords do not match.')
-            return;
-        }
-
-        fetch('/api/account/create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => response.json().then(data => ({
-                status: response.status,
-                body: data
-            })))
-            .then(obj => {
-                if (obj.status === 201) {
-                    window.location.href = '/login';
-                } else if (obj.status === 400) {
-                    throw new Error(obj.body.error || 'Missing Username or Password');
-                } else if (obj.status === 401) {
-                    throw new Error(obj.body.error || 'Username Taken');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                setErrorMessage(error.message);
+        const userCredential = await signUp(email, password);
+        if (userCredential) {
+            const usersCollectionRef = doc(db, "users", email);
+            await setDoc(usersCollectionRef, {
+                email: email,
+                username: username,
+                memberSince: serverTimestamp(),
+                added: [],
+                addedYou: [],
+                totalPints: 0
             });
+            console.log("User created successfully:", userCredential.user);
+            window.location.href = '/'
+        } else {
+            setErrorMessage('Failed to create an account. Please check the provided details and try again.');
+        }
     };
 
-
     return (
-        <main className="flex min-h-screen flex-col items-center justify-between p-24">
+        <main className="flex min-h-screen flex-col items-center justify-between lg:p-24 p-12">
             <Panel width={'medium'} shadow={'orange'}>
                 <p className={'text-pt-brown text-4xl font-bold'}>Sign Up</p>
-                <form onSubmit={handleSubmit} className={'block space-y-5'}>
+                <form className={'block space-y-5'} onSubmit={handleSignUp}>
+                    <div>
+                        <input type="text" id="email"
+                               className="border text-gray-900 text-sm rounded-lg w-full p-4"
+                               placeholder="Email" value={email} onChange={e => setEmail(e.target.value)}
+                               required/>
+                    </div>
                     <div>
                         <input type="text" id="username"
                                className="border text-gray-900 text-sm rounded-lg w-full p-4"
@@ -68,13 +73,14 @@ export default function Home() {
                                className="border text-gray-900 text-sm rounded-lg w-full p-4"
                                placeholder="Re-Confirm Password" value={confirmPassword}
                                onChange={e => setConfirmPassword(e.target.value)}
-                        required/>
+                               required/>
                     </div>
                     <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 min-w-full"
-                            type={'submit'} onClick={handleSubmit}>
+                            type={'submit'}>
                         Sign Up
                     </button>
-                    {errorMessage && <p className="border text-pt-red text-center font-bold rounded-2xl">{errorMessage}</p>}
+                    {errorMessage &&
+                        <p className="border text-pt-red text-center font-bold rounded-2xl">{errorMessage}</p>}
                 </form>
             </Panel>
         </main>

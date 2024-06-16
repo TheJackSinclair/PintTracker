@@ -1,127 +1,185 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import Carousel from '../Components/Carousel';
-import { Panel } from '../Components/Panel'
-import { AnalyticsChart } from '../Components/AnalyticsChart';
-import {fetchUsername, fetchUserToken} from '../Common/UserCommon'
-import { SwiperSlide } from 'swiper/react';
+import {Panel} from '../Components/Panel'
+import {AnalyticsChart} from '../Components/AnalyticsChart';
+import {UserData} from '../Common/UserCommon'
+import {SwiperSlide} from 'swiper/react';
 import AnalyticsCard from '../Components/AnalyticsCard';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
-import axios from 'axios';
+import {useAuth} from "@/app/AuthProvider";
+import {getUserDataById, getUserPints} from "@/app/firebase/firebaseUtils";
+import {PintEntry} from "@/app/Common/BeerCommon";
+
+function formatDate(d: Date): string {
+    const pad = (num: number): string => num < 10 ? '0' + num : num.toString();
+    return `${pad(d.getDate())}/${pad(d.getMonth() + 1)}/${d.getFullYear()}`;
+}
+
+function findMaxPintDay(pintEntries: PintEntry[]): { date: string, count: number } | null {
+    // Group and count pints by date
+    const countByDate: Record<string, number> = pintEntries.reduce((acc: Record<string, number>, entry: PintEntry) => {
+        const date: string = formatDate(entry.timestamp);
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+    }, {});
+
+    // Find the day with the most pints
+    let maxDay: string | null = null;
+    let maxCount: number = 0;
+
+    Object.entries(countByDate).forEach(([date, count]) => {
+        if (count > maxCount) {
+            maxDay = date;
+            maxCount = count;
+        }
+    });
+
+    return maxDay ? {date: maxDay, count: maxCount} : null;
+}
+
+function findFavoritePint(pintEntries: PintEntry[]): PintEntry | null {
+    const frequencyMap: Record<string, { count: number, entry: PintEntry }> = {};
+
+    pintEntries.forEach(entry => {
+        const key = entry.name;  // You can use 'name' or 'full_name' based on how specific you want to be
+        if (frequencyMap[key]) {
+            frequencyMap[key].count++;
+        } else {
+            frequencyMap[key] = {count: 1, entry};
+        }
+    });
+
+    let favoritePint: PintEntry | null = null;
+    let maxCount = 0;
+
+    Object.values(frequencyMap).forEach(({count, entry}) => {
+        if (count > maxCount) {
+            favoritePint = entry;
+            maxCount = count;
+        }
+    });
+
+    return favoritePint;
+}
+
+function findHighestAbv(pintEntries: PintEntry[]): PintEntry | null {
+    if (pintEntries.length === 0) {
+        return null;
+    }
+
+    let highestAbvEntry = pintEntries[0]; // Start with the first entry as the initial highest
+
+    pintEntries.forEach(entry => {
+        if (entry.abv > highestAbvEntry.abv) {
+            highestAbvEntry = entry;
+        }
+    });
+
+    return highestAbvEntry;
+}
 
 export default function MyPints() {
-  const [username, setUsername] = useState<string | null>(null);
-  const [pintsLastWeek, setPintsLastWeek] = useState([]);
-  const [favPint, setFavPint] = useState(null);
-  const [strongestPint, setStrongestPint] = useState({name: null, abv: null});
-  const [numPintsDrank, setNumPintsDrank] = useState(null);
-  const [dayMostDrank, setDayMostDrank] = useState({day: null, pints_drank: null});
+    const {currentUser, loading} = useAuth();
+    const [userData, setUserData] = useState<UserData | null>(null);
+    const [pintHistory, setPintHistory] = useState<PintEntry[]>([]);
 
-  // this is like onMounted() in vuejs
-    useEffect(() => {
-        const fetchTokenAndUsername = async () => {
-            const token = fetchUserToken();
-            if (!token) {
-                window.location.href = '/login';
-            } else {
-                const usernameToken = fetchUsername(token);
-                setUsername(usernameToken);
-            }
-        };
-
-        fetchTokenAndUsername();
-    }, []);
+    const email = currentUser?.email ?? ''
 
     useEffect(() => {
-        console.log('Username' && username)
-        if (username !== null) {
-            console.log(username);
-            fetchAnalytics();
-            fetchPintsLastWeek();
-        }
-    }, [username]);
+        getUserDataById(email).then(setUserData);
+    }, [email]);
 
-  const fetchAnalytics = async () => {
-      fetch('/api/analytics/' + username)
-          .then(response => response.json())
-          .then(data => {
-              console.log('Response Data', data);
-              const analytics = data['user_statistics'];
-              setFavPint(analytics['favourite_pint']);
-              setNumPintsDrank(analytics['total_pints_drank']);
-              setDayMostDrank(analytics['most_drank_day']);
-              setStrongestPint(analytics['strongest_pint_drank']);
-          })
-          .catch(error => console.error('Error fetching data:', error));
-  };
+    useEffect(() => {
+        getUserPints(email).then(pints => {
+            setPintHistory(pints);
 
-  const fetchPintsLastWeek = async () => {
-    try {
-        axios.get('/api/analytics/last_week/' + username).then((response) => {
-          setPintsLastWeek(response.data['pints_per_day']);
+        }).catch(error => {
+            console.log(error);
         });
-        
-    } catch (error) {
-        console.error('Error fetching data:', error);
+    }, [email]);
+
+    if (loading) {
+        return <div>Loading...</div>;
     }
-  };
 
-  return (
-    <main className="min-h-screen p-10">
-      {username ? (
-        <div className="my-5 flex flex-col">
-          <p className="text-pt-brown text-center text-6xl font-extrabold drop-shadow-2xl stat-info-main">Here's your analytics, {username}</p>
-        </div>
-      ) : (
-        <p>Loading...</p>
-      )}
+    {
+        !currentUser ? window.location.href = '/login' : null
+    }
 
-      <div className='flex mb-16'>
-        <Carousel> 
-          <SwiperSlide>
-            <AnalyticsCard>
-                <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl" >Your favourite pint is...</h1>
-                <h1 className="mt-6 mb-6 text-pt-brown text-5xl font-extrabold stat-info-main">{favPint}</h1>
-                <h1 className='text-5xl'>🍻</h1>
-                <p className="text-pt-brown italic bottom-0 absolute mb-2">... cheers to that</p>
-            </AnalyticsCard>
-            </SwiperSlide>
-            <SwiperSlide>
-            <AnalyticsCard>
-                <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl" >You've drank...</h1>
-                <h1 className="mt-6 mb-6 text-pt-brown text-5xl font-extrabold stat-info-main">{numPintsDrank} pints</h1>
-                <h1 className='mt-6 mb-6 text-pt-brown text-xl font-extrabold stat-info-main'>since you've joined 🍻</h1>
-                <p className="text-pt-brown italic bottom-0 absolute mb-2">... impressive!</p>
-            </AnalyticsCard>
-            </SwiperSlide>
-            <SwiperSlide>
-            <AnalyticsCard>
-                <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl" >Your Strongest pint is...</h1>
-                <h1 className="mt-6 mb-6 text-pt-brown text-5xl font-extrabold stat-info-main">{strongestPint.name}</h1>
-                <h1 className='mt-6 mb-6 text-pt-brown text-xl font-extrabold stat-info-main'>@ {strongestPint.abv}% a.b.v 🥊</h1>
-                <p className="text-pt-brown italic bottom-0 absolute mb-2">... ooft</p>
-            </AnalyticsCard>
-            </SwiperSlide>
-            <SwiperSlide>
-            <AnalyticsCard>
-                <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl" >Your drank the most pints on...</h1>
-                <h1 className="mt-6 mb-6 text-pt-brown text-4xl font-extrabold stat-info-main break-words">{dayMostDrank.day}</h1>
-                <h1 className='text-5xl'>📆</h1>
-                <h1 className='mt-6 mb-6 text-pt-brown text-xl font-extrabold stat-info-main'>with {dayMostDrank.pints_drank} pints put away</h1>
-                <p className="text-pt-brown italic bottom-0 absolute mb-2">... save the date!</p>
-            </AnalyticsCard>
-            </SwiperSlide>
-        </Carousel>
-      </div>
 
-      <Panel width={"large"} shadow={"orange"} centered={true}>
-          <h5 className="mt-2 text-5xl font-bold tracking-tight dark:text-white text-pt-brown">Your weekly pints:</h5>
-          <AnalyticsChart weeklyPintHistory={pintsLastWeek}/>
-        </Panel>
+    const maxPintDay = findMaxPintDay(pintHistory);
 
-    </main>
-  );
+    const favoritePint = findFavoritePint(pintHistory);
+
+    const highestAbvPint = findHighestAbv(pintHistory);
+
+    return (
+        <main className="min-h-screen p-10">
+            {userData ? (
+                <div className="my-5 flex flex-col">
+                    <p className="text-pt-brown text-center text-6xl font-extrabold drop-shadow-2xl stat-info-main">Here's
+                        your analytics, {userData.username}</p>
+                </div>
+            ) : (
+                <p>Loading...</p>
+            )}
+
+            <div className='flex mb-16'>
+                <Carousel>
+                    <SwiperSlide>
+                        <AnalyticsCard>
+                            <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl">Your favourite pint
+                                is...</h1>
+                            <h1 className="mt-6 mb-6 text-pt-brown text-5xl font-extrabold stat-info-main">{favoritePint?.name}</h1>
+                            <h1 className='text-5xl'>🍻</h1>
+                            <p className="text-pt-brown italic bottom-0 absolute mb-2">... cheers to that</p>
+                        </AnalyticsCard>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <AnalyticsCard>
+                            <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl">You've drank...</h1>
+                            <h1 className="mt-6 mb-6 text-pt-brown text-5xl font-extrabold stat-info-main">{pintHistory.length} pints</h1>
+                            <h1 className='mt-6 mb-6 text-pt-brown text-xl font-extrabold stat-info-main'>since you've
+                                joined 🍻</h1>
+                            <p className="text-pt-brown italic bottom-0 absolute mb-2">... impressive!</p>
+                        </AnalyticsCard>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <AnalyticsCard>
+                            <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl">Your Strongest pint
+                                is...</h1>
+                            <h1 className="mt-6 mb-6 text-pt-brown text-3xl font-extrabold stat-info-main overflow-auto ">{highestAbvPint?.name ?? 0}</h1>
+                            <h1 className='mt-6 mb-6 text-pt-brown text-xl font-extrabold stat-info-main'>@ {highestAbvPint?.abv ?? 0}%
+                                a.b.v 🥊</h1>
+                            <p className="text-pt-brown italic bottom-0 absolute mb-2">... ooft</p>
+                        </AnalyticsCard>
+                    </SwiperSlide>
+                    <SwiperSlide>
+                        <AnalyticsCard>
+                            <h1 className="text-pt-brown text-3xl font-extrabold drop-shadow-2xl">Your drank the most
+                                pints on...</h1>
+                            <h1 className="mt-6 mb-6 text-pt-brown text-4xl font-extrabold stat-info-main break-words">{maxPintDay?.date}</h1>
+                            <h1 className='text-5xl'>📆</h1>
+                            <h1 className='mt-6 mb-6 text-pt-brown text-xl font-extrabold stat-info-main'>with {maxPintDay?.count} pints
+                                put away</h1>
+                            <p className="text-pt-brown italic bottom-0 absolute mb-2">... save the date!</p>
+                        </AnalyticsCard>
+                    </SwiperSlide>
+                </Carousel>
+            </div>
+
+            <div className={'lg:block hidden'}>
+                <Panel width={"large"} shadow={"orange"} centered={true}>
+                    <h5 className="mt-2 text-5xl font-bold tracking-tight dark:text-white text-pt-brown">Your weekly
+                        pints:</h5>
+                    <AnalyticsChart weeklyPintHistory={pintHistory}/>
+                </Panel>
+            </div>
+
+        </main>
+    );
 }
