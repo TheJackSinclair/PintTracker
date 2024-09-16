@@ -5,6 +5,7 @@ import {LeaderboardPanel} from '../Components/LeaderboardPanel'
 import {useAuth} from "@/app/AuthProvider";
 import {getUserDataById} from "@/app/firebase/firebaseUtils";
 import {UserData} from "@/app/Common/UserCommon";
+import {Loading} from "@/app/Components/Loading";
 
 export default function Leaderboard() {
     const [friendsData, setFriendsData] = useState<UserData[]>([]);
@@ -42,7 +43,7 @@ export default function Leaderboard() {
     }, [userData?.added])
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     {

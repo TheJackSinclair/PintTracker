@@ -1,18 +1,19 @@
 "use client";
 
 import React, {useState, useEffect} from 'react';
-import Carousel from '../Components/Carousel';
+import {Carousel} from '../Components/Carousel';
 import {Panel} from '../Components/Panel'
-import {AnalyticsChart} from '../Components/AnalyticsChart';
+import {AnalyticsChart} from "../Components/Analytics";
 import {UserData} from '../Common/UserCommon'
 import {SwiperSlide} from 'swiper/react';
-import AnalyticsCard from '../Components/AnalyticsCard';
+import {AnalyticsCard} from '../Components/Analytics';
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
 import 'swiper/css/pagination';
 import {useAuth} from "@/app/AuthProvider";
 import {getUserDataById, getUserPints} from "@/app/firebase/firebaseUtils";
 import {PintEntry} from "@/app/Common/BeerCommon";
+import {Loading} from "@/app/Components/Loading";
 
 function formatDate(d: Date): string {
     const pad = (num: number): string => num < 10 ? '0' + num : num.toString();
@@ -103,7 +104,7 @@ export default function MyPints() {
     }, [email]);
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     {
@@ -125,7 +126,7 @@ export default function MyPints() {
                         your analytics, {userData.username}</p>
                 </div>
             ) : (
-                <p>Loading...</p>
+                <Loading/>
             )}
 
             <div className='flex mb-16'>

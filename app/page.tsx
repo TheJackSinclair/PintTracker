@@ -1,7 +1,7 @@
 'use client'
 import Image from "next/image";
-import {Panel} from "./Components/Panel";
-import BeerGlass from "./Components/BeerGlass";
+import {Panel} from "./Components/Panel/";
+import {BeerGlass} from "./Components/BeerGlass";
 import './beerglass.scss'
 import React, {useEffect, useState} from 'react';
 import {Button} from "./Components/Button";
@@ -10,6 +10,7 @@ import {useAuth} from "@/app/AuthProvider";
 import {addPintToHistory} from "@/app/firebase/firebaseUtils";
 import {BeerData} from "@/app/Common/BeerCommon";
 import Papa from 'papaparse';
+import {Loading} from "@/app/Components/Loading";
 
 export default function Home() {
 
@@ -47,7 +48,7 @@ export default function Home() {
 
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     {
@@ -86,19 +87,21 @@ export default function Home() {
             <div className="flex flex-col lg:flex-row lg:space-x-20 lg:mt-10 mt-4">
 
                 <Panel width={"extralarge"} shadow={"orange"}>
-                    <h5 className="mb-4 lg:text-4xl text-2xl font-bold tracking-tight dark:text-white truncate">Your
-                        monthly goal is</h5>
-                    <h2 className="font-bold text-pt-brown text-2xl mb-6 drop-shadow-[2px_2px_var(--tw-shadow-color)] shadow-pt-yellow m-auto">
-                        <span className="lg:text-6xl text-4xl">32</span> pints
-                    </h2>
-                    <h5 className="mb-2 lg:text-4xl text-2xl  font-bold tracking-tight dark:text-white m-auto">You've
-                        tackled</h5>
-                    <span
-                        className="lg:text-6xl text-4xl text-pt-brown font-bold mb-4 drop-shadow-[2px_2px_var(--tw-shadow-color)] shadow-pt-yellow m-auto">100%</span>
-                    <h2 className="font-bold text-pt-brown text-2xl mb-10 m-auto">of your monthly goal</h2>
+                    <div className={'text-center'}>
+                        <h5 className="lg:mb-4 lg:text-4xl text-2xl font-bold tracking-tight dark:text-white truncate">Your
+                            monthly goal is</h5>
+                        <h2 className="font-bold text-pt-brown text-2xl lg:mb-6 drop-shadow-[2px_2px_var(--tw-shadow-color)] shadow-pt-yellow m-auto">
+                            <span className="lg:text-6xl text-4xl">32</span> pints
+                        </h2>
+                        <h5 className="lg:mb-2 lg:text-4xl text-2xl  font-bold tracking-tight dark:text-white m-auto">You've
+                            tackled</h5>
+                        <span
+                            className="lg:text-6xl text-4xl text-pt-brown font-bold lg:mb-4 drop-shadow-[2px_2px_var(--tw-shadow-color)] shadow-pt-yellow m-auto">100%</span>
+                        <h2 className="font-bold text-pt-brown text-2xl mb-10 m-auto">of your monthly goal</h2>
 
-                    <div className={'lg:block hidden'}>
-                        <BeerGlass/>
+                        <div className={''}>
+                            <BeerGlass/>
+                        </div>
                     </div>
                 </Panel>
 

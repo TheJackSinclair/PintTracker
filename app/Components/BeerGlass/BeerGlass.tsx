@@ -1,5 +1,5 @@
 import React from 'react';
-import '../output.css';
+import './output.css';
 
 const BeerGlass = () => {
     const bubbles = Array.from({length: 13}, (_, i) => i);
@@ -19,4 +19,4 @@ const BeerGlass = () => {
     );
 };
 
-export default BeerGlass;
+export {BeerGlass}
