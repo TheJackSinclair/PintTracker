@@ -4,16 +4,16 @@ import {Panel} from "@/app/Components/Panel";
 import React, {useState} from "react";
 import {signIn} from "@/app/firebase/firebaseUtils";
 import {useAuth} from "@/app/AuthProvider";
+import {Loading} from "@/app/Components/Loading";
 
 export default function Home() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
 
     const {currentUser, loading} = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     {
@@ -47,7 +47,7 @@ export default function Home() {
                                placeholder="Password"
                                onChange={(e) => setPassword(e.target.value)} required/>
                     </div>
-                    {error && <p className="border text-pt-red text-center font-bold rounded-2xl">{error}</p>}
+                    
                     <button className="bg-pt-red text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4 min-w-full"
                             type={'submit'}>
                         Sign In

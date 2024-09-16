@@ -7,12 +7,12 @@ interface PanelProps {
 
 const LeaderboardPanel = (props: PanelProps) => {
 
-    const [selTab, setSelTab] = useState<string>('');
-
-    const handleTabClick = (tab: string) => {
-        setSelTab(tab);
-        props.onTabClick(tab);
-    };
+    // const [selTab, setSelTab] = useState<string>('');
+    //
+    // const handleTabClick = (tab: string) => {
+    //     setSelTab(tab);
+    //     props.onTabClick(tab);
+    // };
 
     return (
         <div className={'min-w-[35%] mx-auto'}>

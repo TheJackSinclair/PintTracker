@@ -7,6 +7,7 @@ import {useAuth} from "@/app/AuthProvider";
 import {doc, setDoc} from "firebase/firestore";
 import {db} from "@/app/firebase/firebase-config";
 import {serverTimestamp} from "@firebase/firestore";
+import {Loading} from "@/app/Components/Loading";
 
 
 export default function Home() {
@@ -18,7 +19,7 @@ export default function Home() {
     const {currentUser, loading} = useAuth();
 
     if (loading) {
-        return <div>Loading...</div>;
+        return <Loading/>;
     }
 
     {
