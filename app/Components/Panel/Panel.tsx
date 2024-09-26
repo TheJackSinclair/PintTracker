@@ -1,7 +1,8 @@
 interface PanelProps {
     children: React.ReactNode;
     width: 'small' | 'medium' | 'large' | 'extralarge';
-    shadow: 'yellow' | 'orange';
+    shadow?: 'yellow' | 'orange';
+    padding?: string
     blur?: boolean;
     centered?: boolean;
 }
@@ -16,12 +17,12 @@ const Panel = (props: PanelProps) => {
     };
 
     const shadowColour = {
-        yellow: 'shadow-pt-yellow',
-        orange: 'shadow-pt-orange'
+        yellow: 'lg:shadow-3xl lg:shadow-pt-yellow',
+        orange: 'lg:shadow-3xl lg:shadow-pt-orange'
     }
 
 
-    const panelClassName = `grid ${props.blur ? 'blur' : ''} ${props.centered ? 'm-auto' : ''} bg-pt-offwhite rounded-[30px] p-8 border-4 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]} shadow-3xl ${shadowColour[props.shadow]}`;
+    const panelClassName = `grid ${props.blur ? 'blur' : ''} ${props.centered ? 'm-auto' : ''} bg-pt-offwhite rounded-[30px] p-${props.padding ?? '8'} border-4 border-pt-brown min-h-[30rem] ${sizeClasses[props.width]} ${props.shadow ? shadowColour[props.shadow] : ''}`;
 
     return (
         <div className={panelClassName}>

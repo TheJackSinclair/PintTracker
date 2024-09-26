@@ -84,9 +84,9 @@ export default function Home() {
     return (
         <main className="flex lg:min-h-screen flex-col items-center justify-between p-5 lg:p-20">
             <h1 className="lg:text-5xl text-xl">Your place for everything <span className="underline">pints</span>.</h1>
-            <div className="flex flex-col lg:flex-row lg:space-x-20 lg:mt-10 mt-4">
 
-                <Panel width={"extralarge"} shadow={"orange"}>
+            <div className="flex flex-col lg:flex-row lg:space-x-20 lg:mt-10 mt-4 w-[95%] lg:w-auto">
+                <Panel width={"extralarge"} shadow={"orange"} padding={'6'}>
                     <div className={'text-center'}>
                         <h5 className="lg:mb-4 lg:text-4xl text-2xl font-bold tracking-tight dark:text-white truncate">Your
                             monthly goal is</h5>
@@ -104,7 +104,6 @@ export default function Home() {
                         </div>
                     </div>
                 </Panel>
-
             </div>
 
             <Button handleClick={handleClick}>
