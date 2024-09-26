@@ -22,14 +22,12 @@ function formatDate(d: Date): string {
 }
 
 function findMaxPintDay(pintEntries: PintEntry[]): { date: string, count: number } | null {
-    // Group and count pints by date
     const countByDate: Record<string, number> = pintEntries.reduce((acc: Record<string, number>, entry: PintEntry) => {
         const date: string = formatDate(entry.timestamp);
         acc[date] = (acc[date] || 0) + 1;
         return acc;
     }, {});
 
-    // Find the day with the most pints
     let maxDay: string | null = null;
     let maxCount: number = 0;
 
@@ -47,7 +45,7 @@ function findFavoritePint(pintEntries: PintEntry[]): PintEntry | null {
     const frequencyMap: Record<string, { count: number, entry: PintEntry }> = {};
 
     pintEntries.forEach(entry => {
-        const key = entry.name;  // You can use 'name' or 'full_name' based on how specific you want to be
+        const key = entry.name;
         if (frequencyMap[key]) {
             frequencyMap[key].count++;
         } else {
@@ -73,7 +71,7 @@ function findHighestAbv(pintEntries: PintEntry[]): PintEntry | null {
         return null;
     }
 
-    let highestAbvEntry = pintEntries[0]; // Start with the first entry as the initial highest
+    let highestAbvEntry = pintEntries[0];
 
     pintEntries.forEach(entry => {
         if (entry.abv > highestAbvEntry.abv) {
