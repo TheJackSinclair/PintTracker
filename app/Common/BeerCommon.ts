@@ -4,9 +4,9 @@ export interface BeerData {
     brewery: string;
     beer_name_full: string;
     description: string;
-    abv: string;  // Assume string, check if parsing to number is needed
-    min_ibu: string;  // Assume string, check if parsing to number is needed
-    max_ibu: string;  // Assume string, check if parsing to number is needed
+    abv: string;
+    min_ibu: string;
+    max_ibu: string;
     astringency: number;
     body: number;
     alcohol: number;
@@ -27,7 +27,7 @@ export interface BeerData {
 }
 
 export interface PintEntry {
-    timestamp: Date;  // This will be converted from Firestore Timestamp
+    timestamp: Date;
     name: string;
     full_name: string;
     abv: number;

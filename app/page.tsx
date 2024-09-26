@@ -22,7 +22,7 @@ export default function Home() {
     const {currentUser, loading} = useAuth();
 
     useEffect(() => {
-        fetch('/beer_profile_and_ratings.csv') // Adjust the path if necessary
+        fetch('/beer_profile_and_ratings.csv')
             .then(response => response.text())
             .then(csvData => {
                 Papa.parse<BeerData>(csvData, {
@@ -56,9 +56,9 @@ export default function Home() {
     }
 
     const handleSuggestionClick = (beer: BeerData) => {
-        setInput(beer.name); // Set input to the name of the clicked suggestion
+        setInput(beer.name);
         setPint(beer)
-        setSuggestions([]); // Optionally clear suggestions after selection
+        setSuggestions([]);
     };
 
     const handleAddPint = async (event: React.FormEvent) => {

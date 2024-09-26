@@ -28,10 +28,9 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
 
         const timer = setTimeout(() => {
             if (loading) {
-                setLoading(false);  // Failsafe to ensure loading does not hang indefinitely
+                setLoading(false);
             }
-        }, 500);  // Adjust time as necessary
-
+        }, 500);
         return () => {
             unsubscribe();
             clearTimeout(timer);

@@ -41,7 +41,7 @@ export default function Home() {
 
     const handleDoubleTap = async (event: React.TouchEvent<HTMLLIElement>, friendEmail: string): Promise<void> => {
         const now = Date.now();
-        const DOUBLE_TAP_DELAY = 300; // milliseconds
+        const DOUBLE_TAP_DELAY = 300;
         if (lastTap && (now - lastTap) < DOUBLE_TAP_DELAY) {
             try {
                 await removeFriend(email, friendEmail);
@@ -58,9 +58,14 @@ export default function Home() {
         fetchFriendsData();
     }, [userData?.added])
 
-    const handleFriendSubmit = () => {
+    const handleFriendSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
         if (email && friend) {
+            console.log("Attempting to add friend:", friend);
             addFriend(email, friend);
+        } else {
+            console.log("Email or friend is missing.");
         }
     };
 
@@ -148,13 +153,20 @@ export default function Home() {
                     </ul>
 
                     <form className={'self-end mb-4 m-auto'} onSubmit={handleFriendSubmit}>
-                        <input type="email" id="friend"
-                               className="border text-gray-900 text-sm rounded-lg p-4 mr-4 mb-2"
-                               placeholder="Enter Friends Email" value={friend}
-                               onChange={e => setFriend(e.target.value)}
-                               required/>
-                        <button className="bg-pt-blue text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4"
-                                type={'submit'}>Add Friend
+                        <input
+                            type="email"
+                            id="friend"
+                            className="border text-gray-900 text-sm rounded-lg p-4 mr-4 mb-2"
+                            placeholder="Enter Friends Email"
+                            value={friend}
+                            onChange={e => setFriend(e.target.value)}
+                            required
+                        />
+                        <button
+                            className="bg-pt-blue text-pt-offwhite font-bold rounded-2xl max-h-[4rem] p-4"
+                            type={'submit'}
+                        >
+                            Add Friend
                         </button>
                     </form>
                 </Modal>

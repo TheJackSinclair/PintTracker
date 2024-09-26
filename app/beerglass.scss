@@ -76,22 +76,21 @@
   .bubble:nth-child(#{$i}) {
     position: absolute;
     border-radius: 50%;
-    background-color: rgba(255,255,255,0.4);
+    background-color: rgba(255, 255, 255, 0.4);
     width: 10px;
     height: 10px;
     top: random(300 + $i) + px;
-    left: random(200 + $i) + px;        
+    left: random(200 + $i) + px;
     animation: {
-      name: bubbles;        
+      name: bubbles;
       timing-function: ease-in-out;
       iteration-count: infinite;
-      duration: (1000ms * $i) - 1050;  
+      duration: (1000ms * $i) - 1050;
       delay: (50ms + $i) + 100;
     }
-    }
   }
-    
-// just move them up 
+}
+
 @keyframes bubbles {
   100% {
     top: -10px;
