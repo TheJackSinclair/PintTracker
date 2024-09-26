@@ -3,7 +3,7 @@
 import React, {useState, useEffect} from 'react';
 import {Carousel} from '../Components/Carousel';
 import {Panel} from '../Components/Panel'
-import {AnalyticsChart} from "../Components/Analytics";
+import {AnalyticsLineChart} from "../Components/Analytics";
 import {UserData} from '../Common/UserCommon'
 import {SwiperSlide} from 'swiper/react';
 import {AnalyticsCard} from '../Components/Analytics';
@@ -14,6 +14,7 @@ import {useAuth} from "@/app/AuthProvider";
 import {getUserDataById, getUserPints} from "@/app/firebase/firebaseUtils";
 import {PintEntry} from "@/app/Common/BeerCommon";
 import {Loading} from "@/app/Components/Loading";
+import {AnalyticsBarChart} from "@/app/Components/Analytics/AnalyticsBarChart";
 
 function formatDate(d: Date): string {
     const pad = (num: number): string => num < 10 ? '0' + num : num.toString();
@@ -119,7 +120,7 @@ export default function MyPints() {
     const highestAbvPint = findHighestAbv(pintHistory);
 
     return (
-        <main className="min-h-screen p-10">
+        <main className="min-h-screen lg:p-10 p-4">
             {userData ? (
                 <div className="my-5 flex flex-col">
                     <p className="text-pt-brown text-center text-6xl font-extrabold drop-shadow-2xl stat-info-main">Here's
@@ -175,9 +176,16 @@ export default function MyPints() {
 
             <div className={'lg:block hidden'}>
                 <Panel width={"large"} shadow={"orange"} centered={true}>
-                    <h5 className="mt-2 text-5xl font-bold tracking-tight dark:text-white text-pt-brown">Your weekly
-                        pints:</h5>
-                    <AnalyticsChart weeklyPintHistory={pintHistory}/>
+                    <h5 className="my-2 text-5xl font-bold dark:text-white text-pt-brown text-center">Your Weekly
+                        Pints</h5>
+                    <AnalyticsLineChart weeklyPintHistory={pintHistory}/>
+                </Panel>
+            </div>
+            <div className={'lg:hidden block'}>
+                <Panel width={"large"} shadow={"orange"} centered={true} padding={'6'}>
+                    <h5 className="mt-2 text-2xl font-bold dark:text-white text-pt-brown text-center">Your Weekly
+                        Pints</h5>
+                    <AnalyticsBarChart weeklyPintHistory={pintHistory}/>
                 </Panel>
             </div>
 

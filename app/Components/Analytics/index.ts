@@ -1,2 +1,2 @@
 export * from './AnalyticsCard'
-export * from './AnalyticsChart'
+export * from './AnalyticsLineChart'
