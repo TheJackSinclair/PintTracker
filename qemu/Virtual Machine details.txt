@@ -1,0 +1,11 @@
+Virtual Machine details
+
+Vm name: the-box
+vm user: virt
+vm usr/root password: swebbwld
+
+install: - This has already been done ignore.
+qemu-system-x86_64 -enable-kvm -m 4G -cpu host -smp 4 -cdrom ubuntu-24.04.1-desktop-amd64.iso -drive file=ubuntu-desktop-24.04.qcow2,format=qcow2 -boot order=d -vga virtio
+
+run a ubuntu-desktop-24.04.qcow2 disk
+qemu-system-x86_64 -enable-kvm -m 4G -cpu host -smp 4 -drive file=ubuntu-desktop-24.04.qcow2,format=qcow2 -boot order=c -vga virtio
